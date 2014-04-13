@@ -1,9 +1,11 @@
 # Pegu
 
+pre-alpha
 
 ## Overview
+Classic [Peg Solitaire](http://en.wikipedia.org/wiki/Peg_solitaire)
 
-An HTML5 solitaire by <http://www.albinotonnina.com>
+HTML5 / OO Js. 
 
 ## To-do
 
