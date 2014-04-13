@@ -71,18 +71,11 @@ Display.prototype.emit = function(event, data) {
     }
 };
 Display.prototype.moveTile = function(tiles) {
-    var middle_tile = this.tiles[tiles.middle_n];
-    //var new_tile = this.tiles[tiles.new_n];    
-    var old_tile = this.tiles[tiles.old_n];
-    this.tiles[tiles.new_n] = old_tile;
-    old_tile.n = tiles.new_n;
-    // var old_square = this.board.getChildByName('square_' + tiles.old_n);
-    // var new_square = this.board.getChildByName('square_' + tiles.new_n);
-    // var middle_square = this.board.getChildByName('square_' + tiles.middle_n);
-    // old_square.getChildAt(1).text = tiles.old_n + ' empty';
-    // new_square.getChildAt(1).text = tiles.new_n + ' ball';
-    // middle_square.getChildAt(1).text = tiles.middle_n + ' empty';
-    this.balls.removeChild(middle_tile);
+    var eaten = this.tiles[tiles.eaten];
+    var old_tile = this.tiles[tiles.from_n];
+    this.tiles[tiles.to_n] = old_tile;
+    old_tile.n = tiles.to_n;
+    this.balls.removeChild(eaten);
 };
 Display.prototype.setAvailableMoves = function(moves) {
     this.availableMoves = moves;
@@ -90,7 +83,6 @@ Display.prototype.setAvailableMoves = function(moves) {
 Display.prototype.actuate = function(grid, metadata) {
     var self = this;
     self.size = grid.size;
-    // enable touch interactions if supported on the current device:
     window.requestAnimationFrame(function() {
         for (var i = 0; i < grid.cells.length; i++) {
             var column = grid.cells[i];
@@ -105,15 +97,6 @@ Display.prototype.actuate = function(grid, metadata) {
                 self.addNewBall(tile);
             };
         };
-        // self.updateScore(metadata.score);
-        // self.updateBestScore(metadata.bestScore);
-        // if (metadata.terminated) {
-        //   if (metadata.over) {
-        //     self.message(false); // You lose
-        //   } else if (metadata.won) {
-        //     self.message(true); // You win!
-        //   }
-        // }
     });
 };
 Display.prototype.pressup = function(evt) {
@@ -193,13 +176,11 @@ Display.prototype.pressmove = function(evt) {
         } else {
             o.y = evt.stageY + o.offset.y;
             o.x = evt.stageX + o.offset.x;
-            if (self.availableMoves.down || self.availableMoves.up) {}
-            if (self.availableMoves.left && self.availableMoves.right) {}
         }
         if (move) {
             self.emit("pressup", {
                 n: o.n,
-                new_n: tile.n
+                to_n: tile.n
             });
             o.x = tile.x;
             o.y = tile.y;

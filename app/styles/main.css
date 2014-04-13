@@ -74,18 +74,26 @@ table {
 
 
 a:link {
-    color: #ffffff;
+    color: #53324f;
     text-decoration: none;
 }
 a:visited {
-    color: #ffffff;
+    color: #53324f;
 }
 a:active {
-    color: #ffffff;
+    color: #53324f;
 }
 a:hover {
     color: #f2e0a0;
 }
+
+#info a,#info a:visited{
+    color: #ffffff;
+}
+#info a:hover{
+    color: #f2e0a0;
+}
+
 html, body {
 background: #f19b7a;
 background: -moz-radial-gradient(center, ellipse cover, #f19b7a 0%, #f0756e 96%, #f0756e 96%);

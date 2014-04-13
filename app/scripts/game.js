@@ -8,7 +8,7 @@ Game.prototype.mousedown = function(o) {
     this.display.setAvailableMoves(movesAvailable);
 }
 Game.prototype.pressup = function(move) {
-    var tile = this.grid.moveTile(move.n, move.new_n);
+    var tile = this.grid.moveTile(move.n, move.to_n);
     if (tile) {
         this.display.moveTile(tile);
     }
@@ -36,6 +36,6 @@ Game.prototype.readLevels = function() {
 };
 Game.prototype.render = function() {
     this.display.actuate(this.grid, {
-      score:'?'
+        score: '?'
     });
 };

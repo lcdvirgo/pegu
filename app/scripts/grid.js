@@ -61,42 +61,42 @@ Grid.prototype.getTile = function(n) {
     });
     return res;
 };
-Grid.prototype.moveTile = function(n, new_n) {
+Grid.prototype.moveTile = function(n, to_n) {
     var self = this;
     var tiles = {};
-    var dir, middle_n;
-    tiles.old_n = this.getTile(n);
-    tiles.new_n = this.getTile(new_n);
-    tiles.new_n.addBall();
-    tiles.old_n.removeBall();
-    if (new_n - this.size * 2 == n) {
+    var eaten;
+    tiles.from_n = this.getTile(n);
+    tiles.to_n = this.getTile(to_n);
+    tiles.to_n.addBall();
+    tiles.from_n.removeBall();
+    if (to_n - this.size * 2 == n) {
         //right
-        middle_n = new_n - this.size;
-        tiles.middle_n = this.getTile(middle_n);
-        tiles.middle_n.removeBall();
+        eaten = to_n - this.size;
+        tiles.eaten = this.getTile(eaten);
+        tiles.eaten.removeBall();
     }
-    if (new_n + this.size * 2 == n) {
+    if (to_n + this.size * 2 == n) {
         //left
-        middle_n = new_n + this.size;
-        tiles.middle_n = this.getTile(middle_n);
-        tiles.middle_n.removeBall();
+        eaten = to_n + this.size;
+        tiles.eaten = this.getTile(eaten);
+        tiles.eaten.removeBall();
     }
-    if (new_n + 2 == n) {
+    if (to_n + 2 == n) {
         //up
-        middle_n = new_n + 1;
-        tiles.middle_n = this.getTile(middle_n);
-        tiles.middle_n.removeBall();
+        eaten = to_n + 1;
+        tiles.eaten = this.getTile(eaten);
+        tiles.eaten.removeBall();
     }
-    if (new_n - 2 == n) {
+    if (to_n - 2 == n) {
         //down
-        middle_n = new_n - 1;
-        tiles.middle_n = this.getTile(middle_n);
-        tiles.middle_n.removeBall();
+        eaten = to_n - 1;
+        tiles.eaten = this.getTile(eaten);
+        tiles.eaten.removeBall();
     }
     var res = {
-        new_n: tiles.new_n.n,
-        old_n: tiles.old_n.n,
-        middle_n: tiles.middle_n.n
+        to_n: tiles.to_n.n,
+        from_n: tiles.from_n.n,
+        eaten: tiles.eaten.n
     }
     return res;
 };
