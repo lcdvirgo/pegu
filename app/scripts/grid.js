@@ -1,10 +1,9 @@
 function Grid(size, previousState, level) {
     this.size = size;
     this.level = level;
-    this.cells = previousState ? this.fromState(previousState) : this.empty();
+    this.cells = this.build();
 }
-// Build a grid of the specified size
-Grid.prototype.empty = function() {
+Grid.prototype.build = function() {
     var cells = [];
     var n = 1;
     for (var x = 0; x < this.size; x++) {
@@ -63,7 +62,6 @@ Grid.prototype.getTile = function(n) {
     return res;
 };
 Grid.prototype.moveTile = function(n, new_n) {
-
     var self = this;
     var tiles = {};
     var dir, middle_n;
@@ -76,17 +74,20 @@ Grid.prototype.moveTile = function(n, new_n) {
         middle_n = new_n - this.size;
         tiles.middle_n = this.getTile(middle_n);
         tiles.middle_n.removeBall();
-    } else if (new_n + this.size * 2 == n) {
+    }
+    if (new_n + this.size * 2 == n) {
         //left
         middle_n = new_n + this.size;
         tiles.middle_n = this.getTile(middle_n);
         tiles.middle_n.removeBall();
-    } else if (new_n + 2 == n) {
+    }
+    if (new_n + 2 == n) {
         //up
         middle_n = new_n + 1;
         tiles.middle_n = this.getTile(middle_n);
         tiles.middle_n.removeBall();
-    } else if (new_n - 2 == n) {
+    }
+    if (new_n - 2 == n) {
         //down
         middle_n = new_n - 1;
         tiles.middle_n = this.getTile(middle_n);

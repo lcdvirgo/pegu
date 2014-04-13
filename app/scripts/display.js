@@ -20,8 +20,7 @@ Display.prototype.tick = function(event) {
 }
 Display.prototype.init = function(event) {
     var self = this;
-    this.canvas = document.getElementById("testCanvas");
-    //check to see if we are running in a browser with touch support
+    this.canvas = document.getElementById("pegu");
     this.stage = new createjs.Stage(this.canvas);
     this.stage.enableMouseOver(10);
     this.stage.mouseMoveOutside = true;
@@ -33,7 +32,6 @@ Display.prototype.init = function(event) {
     this.container.addChild(this.balls);
     //this.balls.alpha = 0.5;
     //this.fiori = [];
-    this.size = 0;
     this.selected;
     self.resize();
     createjs.Touch.enable(this.stage);
@@ -48,15 +46,14 @@ Display.prototype.init = function(event) {
 Display.prototype.resize = function() {
     var w = window.innerWidth;
     var h = window.innerHeight;
-    this.canvas.width = w;
+    this.canvas.width = h;
     this.canvas.height = h;
-
     this.container.x = 0;
     this.container.y = 0;
-    this.w = h / 7;
-    this.h = h / 7;
-    this.ballw = h / 7 - 6;
-    this.ballh = h / 7 - 6;
+    this.w = h / (this.size || 7);
+    this.h = h / (this.size || 7);
+    this.ballw = h / (this.size || 7) - 6;
+    this.ballh = h / (this.size || 7) - 6;
     this.update = true;
 }
 Display.prototype.on = function(event, callback) {
@@ -79,7 +76,6 @@ Display.prototype.moveTile = function(tiles) {
     var old_tile = this.tiles[tiles.old_n];
     this.tiles[tiles.new_n] = old_tile;
     old_tile.n = tiles.new_n;
-
     // var old_square = this.board.getChildByName('square_' + tiles.old_n);
     // var new_square = this.board.getChildByName('square_' + tiles.new_n);
     // var middle_square = this.board.getChildByName('square_' + tiles.middle_n);
@@ -155,33 +151,50 @@ Display.prototype.pressmove = function(evt) {
     //var initPosition = o;
     if (self.availableMoves && !self.moved) {
         var move = false;
-        if (self.availableMoves.left && o.x <= o.start.x) {
-            var tile = self.grid.getTile(self.availableMoves.left);
-            o.x = evt.stageX + o.offset.x;
-            if (o.x < tile.x + (self.w / 2)) {
-                move = true;
+        var dx = Math.abs(o.x - o.start.x);
+        var dy = Math.abs(o.y - o.start.y);
+        var tolerance = 4;
+        if (dx > tolerance || dy > tolerance) {
+            if (dx > dy) {
+                if (self.availableMoves.left && o.x <= o.start.x) {
+                    var tile = self.grid.getTile(self.availableMoves.left);
+                    o.x = evt.stageX + o.offset.x;
+                    o.y = tile.y;
+                    if (o.x < tile.x + (self.w / 2)) {
+                        move = true;
+                    }
+                }
+                if (self.availableMoves.right && o.x >= o.start.x) {
+                    var tile = self.grid.getTile(self.availableMoves.right);
+                    o.x = evt.stageX + o.offset.x;
+                    o.y = tile.y;
+                    if (o.x > tile.x - (self.w / 2)) {
+                        move = true;
+                    }
+                }
+            } else {
+                if (self.availableMoves.down && o.y >= o.start.y) {
+                    var tile = self.grid.getTile(self.availableMoves.down);
+                    o.y = evt.stageY + o.offset.y;
+                    o.x = tile.x;
+                    if (o.y > tile.y - (self.h / 2)) {
+                        move = true;
+                    }
+                }
+                if (self.availableMoves.up && o.y <= o.start.y) {
+                    var tile = self.grid.getTile(self.availableMoves.up);
+                    o.y = evt.stageY + o.offset.y;
+                    o.x = tile.x;
+                    if (o.y < tile.y + (self.h / 2)) {
+                        move = true;
+                    }
+                }
             }
-        }
-        if (self.availableMoves.right && o.x >= o.start.x) {
-            var tile = self.grid.getTile(self.availableMoves.right);
-            o.x = evt.stageX + o.offset.x;
-            if (o.x > tile.x - (self.w / 2)) {
-                move = true;
-            }
-        }
-        if (self.availableMoves.down && o.y >= o.start.y) {
-            var tile = self.grid.getTile(self.availableMoves.down);
+        } else {
             o.y = evt.stageY + o.offset.y;
-            if (o.y > tile.y - (self.h / 2)) {
-                move = true;
-            }
-        }
-        if (self.availableMoves.up && o.y <= o.start.y) {
-            var tile = self.grid.getTile(self.availableMoves.up);
-            o.y = evt.stageY + o.offset.y;
-            if (o.y < tile.y + (self.h / 2)) {
-                move = true;
-            }
+            o.x = evt.stageX + o.offset.x;
+            if (self.availableMoves.down || self.availableMoves.up) {}
+            if (self.availableMoves.left && self.availableMoves.right) {}
         }
         if (move) {
             self.emit("pressup", {
@@ -212,14 +225,9 @@ Display.prototype.rollout = function(evt) {
 }
 Display.prototype.addNewBall = function(tile) {
     var self = this;
-    // create a shape that represents the center of the daisy image:
-    // create and populate the screen with random daisies:
     if (tile.isball && tile.istile) {
         var g = new createjs.Graphics().beginFill("rgba(255,255,255,1)").drawRoundRect(0, 0, self.ballw, self.ballh, 5);
         var s = new createjs.Shape(g);
-        var text = new createjs.Text(tile.n, "14px Arial", "#ff7700");
-        text.x = 30;
-        text.y = 30;
         s.x = (self.w) / 2;
         s.y = (self.h) / 2;
         s.scale = 1;
@@ -228,14 +236,12 @@ Display.prototype.addNewBall = function(tile) {
         var ball = new createjs.Container();
         ball.addChild(s);
         ball.name = 'ball_' + tile.n;
-        //ball.addChild(text);
         ball.x = tile.x;
         ball.y = tile.y;
         ball.n = tile.n;
         ball.cursor = 'pointer';
         this.tiles[tile.n] = ball;
         self.balls.addChild(ball);
-        //self.fiori.push(ball);
         ball.addEventListener("pressup", function(evt) {
             self.pressup(evt)
         });
@@ -257,31 +263,13 @@ Display.prototype.addNewTile = function(tile) {
     var self = this;
     var square = new createjs.Container();
     square.name = 'square_' + tile.n;
-    var itxt = '';
-    if (tile.isball) {
-        itxt = tile.n + ' ball';
-    } else {
-        itxt = tile.n + ' empty';
-    }
-    var text = new createjs.Text(itxt, "14px Arial", "#ff7700");
     if (tile.istile) {
-        var g = new createjs.Graphics().beginFill("rgba(90,255,24,1)").drawRoundRect(0, 0, self.w, self.h, 2);
+        var g = new createjs.Graphics().beginFill("rgba(240,117,110,1)").drawRoundRect(0, 0, self.w, self.h, 2);
         var s = new createjs.Shape(g);
         square.x = tile.x;
         square.y = tile.y;
         square.addChild(s);
-        //square.addChild(text);
         self.board.addChild(square);
-        //self.stage.update();
-    } else {
-        // var g = new createjs.Graphics().beginFill("rgba(78,50,210,1)").drawRoundRect(0, 0, self.w, self.h, 2);
-        // var s = new createjs.Shape(g);
-        // square.x = tile.x;
-        // square.y = tile.y;
-        // square.addChild(s);
-        // square.addChild(text);
-        // self.board.addChild(square);
-        // // self.stage.update();
     }
     self.update = true;
 };
