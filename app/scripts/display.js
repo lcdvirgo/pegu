@@ -20,8 +20,24 @@ Display.prototype.tick = function(event) {
 }
 Display.prototype.init = function(event) {
     var self = this;
-    this.canvas = document.getElementById("pegu");
+
+
+var canvas = document.createElement('canvas');
+canvas.id     = "pegu";
+
+canvas.width  = window.innerHeight;
+canvas.height = window.innerHeight;
+
+$("#canvasHolder").html(canvas);
+
+    this.canvas = canvas;
+    
+
+// Store the current transformation matrix
+
+
     this.stage = new createjs.Stage(this.canvas);
+
     this.stage.enableMouseOver(10);
     this.stage.mouseMoveOutside = true;
     this.container = new createjs.Container();
@@ -80,7 +96,7 @@ Display.prototype.moveTile = function(tiles) {
 Display.prototype.setAvailableMoves = function(moves) {
     this.availableMoves = moves;
 };
-Display.prototype.actuate = function(grid, metadata) {
+Display.prototype.render = function(grid, metadata) {
     var self = this;
     self.size = grid.size;
     window.requestAnimationFrame(function() {
@@ -196,6 +212,8 @@ Display.prototype.rollover = function(evt) {
     var o = evt.target;
     o.scaleX = o.scaleY = o.scale * 1.04;
     self.update = true;
+
+
 }
 Display.prototype.rollout = function(evt) {
     var self = this;

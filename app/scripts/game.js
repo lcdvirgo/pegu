@@ -1,6 +1,13 @@
-function Game() {
+function Game(level) {
     //this.storageManager = new Storage;
     this.levels = this.readLevels();
+    if(!this.levels[level]){
+        level = 0;
+    }
+
+
+  
+    this.level = this.levels[level||0];
     this.init();
 }
 Game.prototype.mousedown = function(o) {
@@ -17,7 +24,7 @@ Game.prototype.pressmove = function() {
     //debugger;
 }
 Game.prototype.init = function() {
-    this.grid = new Grid(7, null, this.levels[0]);
+    this.grid = new Grid(7, null, this.level);
     this.display = new Display(this.grid);
     this.display.on("mousedown", this.mousedown.bind(this));
     this.display.on("pressup", this.pressup.bind(this));
@@ -35,7 +42,9 @@ Game.prototype.readLevels = function() {
     return res;
 };
 Game.prototype.render = function() {
-    this.display.actuate(this.grid, {
+    this.display.render(this.grid, {
         score: '?'
     });
 };
+
+

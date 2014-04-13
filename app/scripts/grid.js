@@ -18,6 +18,15 @@ Grid.prototype.build = function() {
             n++;
         }
     }
+
+
+
+
+
+
+
+
+    
     return cells;
 };
 Grid.prototype.movesAvailable = function(n) {
