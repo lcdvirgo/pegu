@@ -1,8 +1,8 @@
 //game
 var game;
-var current_level = 0;
+
 window.requestAnimationFrame(function() {
-    game = new Game(0);
+    game = new Game(LocalStorage);
 });
 // DUMMY CODE ALERT// 
 // DUMMY CODE ALERT// 
@@ -22,16 +22,14 @@ jQuery(document).ready(function($) {
     });
     $('#refresh').on('click', function(event) {
         event.preventDefault();
-        game = new Game(current_level);
+        game.restart();
     });
     $('#next').on('click', function(event) {
         event.preventDefault();
-        current_level = current_level + 1;
-        game = new Game(current_level);
+        game.nextLevel();
     });
     $('#previous').on('click', function(event) {
         event.preventDefault();
-        current_level = current_level - 1;
-        game = new Game(current_level);
+        game.previousLevel();
     });
 });

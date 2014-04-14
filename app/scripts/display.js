@@ -1,6 +1,6 @@
 function Display(grid) {
     this.events = {};
-    this.grid = grid;
+   
     this.availableMoves = {
         up: false,
         right: false,
@@ -20,35 +20,22 @@ Display.prototype.tick = function(event) {
 }
 Display.prototype.init = function(event) {
     var self = this;
-
-
-var canvas = document.createElement('canvas');
-canvas.id     = "pegu";
-
-canvas.width  = window.innerHeight;
-canvas.height = window.innerHeight;
-
-$("#canvasHolder").html(canvas);
-
+    var canvas = document.createElement('canvas');
+    canvas.id = "pegu";
+    canvas.width = window.innerHeight;
+    canvas.height = window.innerHeight;
+    $("#canvasHolder").html(canvas);
     this.canvas = canvas;
-    
-
-// Store the current transformation matrix
-
-
+    // Store the current transformation matrix
     this.stage = new createjs.Stage(this.canvas);
-
     this.stage.enableMouseOver(10);
     this.stage.mouseMoveOutside = true;
     this.container = new createjs.Container();
     this.stage.addChild(this.container);
-    this.board = new createjs.Container();
-    this.container.addChild(this.board);
-    this.balls = new createjs.Container();
-    this.container.addChild(this.balls);
+
     //this.balls.alpha = 0.5;
     //this.fiori = [];
-    this.selected;
+    
     self.resize();
     createjs.Touch.enable(this.stage);
     createjs.Ticker.addEventListener("tick", function(event) {
@@ -98,6 +85,16 @@ Display.prototype.setAvailableMoves = function(moves) {
 };
 Display.prototype.render = function(grid, metadata) {
     var self = this;
+
+    
+    self.container.removeAllChildren();
+    self.grid = grid;
+    self.board = new createjs.Container();
+    self.container.addChild(this.board);
+    self.balls = new createjs.Container();
+    self.container.addChild(this.balls);
+
+
     self.size = grid.size;
     window.requestAnimationFrame(function() {
         for (var i = 0; i < grid.cells.length; i++) {
@@ -212,8 +209,6 @@ Display.prototype.rollover = function(evt) {
     var o = evt.target;
     o.scaleX = o.scaleY = o.scale * 1.04;
     self.update = true;
-
-
 }
 Display.prototype.rollout = function(evt) {
     var self = this;
