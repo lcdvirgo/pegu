@@ -46,14 +46,18 @@ Display.prototype.init = function(event) {
 Display.prototype.resize = function() {
     var w = window.innerWidth;
     var h = window.innerHeight;
-    this.canvas.width = h;
-    this.canvas.height = h;
+
+    var m = Math.min(w,h);
+
+
+    this.canvas.width = m;
+    this.canvas.height = m;
     this.container.x = 0;
     this.container.y = 0;
-    this.w = h / (this.size || 7);
-    this.h = h / (this.size || 7);
-    this.ballw = h / (this.size || 7) - 6;
-    this.ballh = h / (this.size || 7) - 6;
+    this.w = m / (this.size || 7);
+    this.h = m / (this.size || 7);
+    this.ballw = m / (this.size || 7) - 6;
+    this.ballh = m / (this.size || 7) - 6;
     this.update = true;
 }
 Display.prototype.on = function(event, callback) {
