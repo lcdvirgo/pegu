@@ -10,5 +10,5 @@ HTML5 / OO Js.
 ## To-do
 
 * Scores.
-* State preservation.
+* State preservation. (Done)
 * everything else!
