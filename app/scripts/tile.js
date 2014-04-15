@@ -4,11 +4,16 @@ function Tile(state) {
     this.n = state.n;
     this.isball = state.isball;
     this.istile = state.istile;
-    this.n = state.n;
+    this.width = state.width;
+    this.height = state.height;
 }
-Tile.prototype.updatePosition = function(position) {
-    this.x = position.x;
-    this.y = position.y;
+Tile.prototype.updateState = function(state) {
+    this.x = state.x;
+    this.y = state.y;
+    this.width = state.width;
+    this.height = state.height;
+
+
 };
 Tile.prototype.addBall = function() {
     this.isball = true;
