@@ -1,6 +1,7 @@
 function Tile(state) {
     this.x = state.x;
     this.y = state.y;
+    this.n = state.n;
     this.isball = state.isball;
     this.istile = state.istile;
     this.n = state.n;
@@ -15,10 +16,13 @@ Tile.prototype.addBall = function() {
 Tile.prototype.removeBall = function() {
     this.isball = false;
 }
-Tile.prototype.updateState = function(state) {
-    this.istile = state.istile;
-    this.isball = state.isball;
-    this.x = state.x;
-    this.y = state.y;
-    this.n = state.n;
+
+Tile.prototype.serialize = function () {
+  return {
+
+      n: this.n,
+
+    isball: this.isball,
+    istile: this.istile
+  };
 };

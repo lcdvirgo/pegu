@@ -1,6 +1,5 @@
 function Display(grid) {
     this.events = {};
-   
     this.availableMoves = {
         up: false,
         right: false,
@@ -32,10 +31,8 @@ Display.prototype.init = function(event) {
     this.stage.mouseMoveOutside = true;
     this.container = new createjs.Container();
     this.stage.addChild(this.container);
-
     //this.balls.alpha = 0.5;
     //this.fiori = [];
-    
     self.resize();
     createjs.Touch.enable(this.stage);
     createjs.Ticker.addEventListener("tick", function(event) {
@@ -85,16 +82,12 @@ Display.prototype.setAvailableMoves = function(moves) {
 };
 Display.prototype.render = function(grid, metadata) {
     var self = this;
-
-    
     self.container.removeAllChildren();
     self.grid = grid;
     self.board = new createjs.Container();
     self.container.addChild(this.board);
     self.balls = new createjs.Container();
     self.container.addChild(this.balls);
-
-
     self.size = grid.size;
     window.requestAnimationFrame(function() {
         for (var i = 0; i < grid.cells.length; i++) {
@@ -114,6 +107,8 @@ Display.prototype.render = function(grid, metadata) {
 };
 Display.prototype.pressup = function(evt) {
     var self = this;
+    var t = evt.target;
+    t.scaleX = t.scaleY = t.scale;
     if (!self.moved) {
         var o = evt.currentTarget;
         o.x = o.start.x;
@@ -124,6 +119,8 @@ Display.prototype.pressup = function(evt) {
     self.update = true;
 }
 Display.prototype.mousedown = function(evt) {
+    var t = evt.target;
+    t.scaleX = t.scaleY = t.scale * 1.04;
     var self = this;
     var o = evt.currentTarget;
     o.parent.addChild(o);
@@ -205,14 +202,12 @@ Display.prototype.pressmove = function(evt) {
 }
 Display.prototype.rollover = function(evt) {
     var self = this;
-    // debugger;
     var o = evt.target;
-    o.scaleX = o.scaleY = o.scale * 1.04;
+    o.scaleX = o.scaleY = o.scale;
     self.update = true;
 }
 Display.prototype.rollout = function(evt) {
     var self = this;
-    //debugger;
     var o = evt.target;
     o.scaleX = o.scaleY = o.scale;
     self.update = true;

@@ -1,33 +1,58 @@
-function Grid(size, previousState, level) {
-    this.size = size;
+function Grid(storage, level) {
+    this.size = 7;
     this.level = level;
+    this.storage = storage;
     this.cells = this.build();
+
 }
 Grid.prototype.build = function() {
     var cells = [];
     var n = 1;
+
+
+    var scheme = this.storage ? this.storage.grid : this.level;
+
+
+
     for (var x = 0; x < this.size; x++) {
         var row = cells[x] = [];
         for (var y = 0; y < this.size; y++) {
             var obj = {};
-            obj['isball'] = $.inArray(n, this.level.currentScheme) >= 0 && $.inArray(n, this.level.emptySpots) < 0 ? true : false;
-            obj['istile'] = $.inArray(n, this.level.currentScheme) >= 0 ? true : false;
+            obj['isball'] = $.inArray(n, scheme.currentScheme) >= 0 && $.inArray(n, scheme.emptySpots) < 0 ? true : false;
+            obj['istile'] = $.inArray(n, scheme.currentScheme) >= 0 ? true : false;
             obj['n'] = n;
             var tile = new Tile(obj)
             row.push(tile);
             n++;
         }
     }
-
-
-
-
-
-
-
-
-    
     return cells;
+};
+Grid.prototype.serialize = function() {
+    var currentScheme = [];
+    var emptySpots = [];
+    this.eachCell(function(x, y, tile) {
+        if (tile.istile) {
+            currentScheme.push(tile.n);
+        }
+        if (!tile.isball) {
+            emptySpots.push(tile.n);
+        }
+    });
+    return {
+        currentScheme: currentScheme,
+        emptySpots: emptySpots
+    };
+    // var cellState = [];
+    // for (var x = 0; x < this.size; x++) {
+    //     var row = cellState[x] = [];
+    //     for (var y = 0; y < this.size; y++) {
+    //         row.push(this.cells[x][y] ? this.cells[x][y].serialize() : null);
+    //     }
+    // }
+    // return {
+    //     cells: cellState
+    // };
 };
 Grid.prototype.movesAvailable = function(n) {
     var availableMoves = {

@@ -1,20 +1,27 @@
-//game
-var game;
-
-window.requestAnimationFrame(function() {
-    game = new Game(LocalStorage);
-});
-// DUMMY CODE ALERT// 
-// DUMMY CODE ALERT// 
-// DUMMY CODE ALERT// 
-// DUMMY CODE ALERT// 
-//buttons
 jQuery(document).ready(function($) {
-    $('.play a').on('click', function(event) {
-        event.preventDefault();
-        $('header').hide('500');
+    var game = new Game(LocalStorage);
+    if (game.getGameStatus() == 1) {
+        $('header').hide();
         $('#info').show('500');
-    });
+        game.start();
+    } else {
+        $('header').show('500');
+        $('#info').hide('500');
+    }
+
+
+        $('.play a').on('click', function(event) {
+            event.preventDefault();
+            $('header').hide('500');
+            $('#info').show('500');
+            if (game.getGameStatus() == 1) {} else {
+                game.start();
+            }
+        });
+
+
+
+    
     $('#infobtn').on('click', function(event) {
         event.preventDefault();
         $('header').show('500');
@@ -31,5 +38,8 @@ jQuery(document).ready(function($) {
     $('#previous').on('click', function(event) {
         event.preventDefault();
         game.previousLevel();
+    });
+    $(window).unload(function() {
+        game.saveState();
     });
 });
