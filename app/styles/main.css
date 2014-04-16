@@ -230,8 +230,9 @@ p.play {
   }
   #panel {
       font-size: 50px;
-height:100%;
+
       bottom: 30px;
+      text-align:left;
  }
  #scoreboard {
      font-size: 20px;
@@ -251,8 +252,9 @@ height:100%;
   }
   #panel {
          font-size: 50px;
-     height:100%;
+
       bottom: 30px;
+      text-align:left;
  }
  #scoreboard {
      font-size: 20px;
