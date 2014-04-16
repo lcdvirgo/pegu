@@ -103,6 +103,13 @@ a:hover {
     color: #f2e0a0;
 }
 
+#buttons a,#buttons a:visited{
+    color: #ffffff;
+}
+#buttons a:hover{
+    color: #f2e0a0;
+}
+
 html, body {
 background: #f19b7a;
 background: -moz-radial-gradient(center, ellipse cover, #f19b7a 0%, #f0756e 96%, #f0756e 96%);
@@ -155,6 +162,34 @@ margin:30px auto 60px auto;
     display:none;
 }
 
+
+#buttons{
+    position:fixed;
+    right:0;
+    top:80px;
+    padding:30px;
+    font-size:40px;
+    display:none;
+}
+
+#panel{
+    position:fixed;
+    left:0;
+    top:0;
+    padding:30px;
+    font-size:50px;
+    color:white;
+    display:none;
+}
+
+
+* {
+    -webkit-user-select: none; 
+}
+
+#scoreboard:active {
+    cursor: crosshair;
+}
 #pegu {
     padding-left: 0;
     padding-right: 0;

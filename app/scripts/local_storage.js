@@ -42,7 +42,7 @@ LocalStorage.prototype.setLevelID = function(levelID) {
     this.storage.setItem(this.levelID, levelID);
 };
 LocalStorage.prototype.getLevelID = function() {
-    return this.storage.getItem(this.levelID) || 0;
+    return this.storage.getItem(this.levelID);
 };
 LocalStorage.prototype.clearLevel = function() {
     this.storage.removeItem('game_level_' + this.getLevelID());
@@ -62,5 +62,4 @@ LocalStorage.prototype.setGameStatus = function(status) {
 LocalStorage.prototype.getGameStatus = function() {
     return this.storage.getItem('gameStatus') || 0;
 };
-
 

@@ -7,7 +7,7 @@ function Display() {
         left: false
     }
     this.moved = false;
-    this.tiles = [];
+    this.balls = [];
     this.score = 0;
     this.init();
 }
@@ -19,11 +19,12 @@ Display.prototype.tick = function(event) {
 }
 Display.prototype.init = function(event) {
     var self = this;
+    var canvas_holder = document.getElementById('canvasHolder');
     var canvas = document.createElement('canvas');
     canvas.id = "pegu";
     canvas.width = window.innerHeight;
     canvas.height = window.innerHeight;
-    $("#canvasHolder").html(canvas);
+    canvas_holder.appendChild(canvas);
     this.canvas = canvas;
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerWidth;
@@ -32,8 +33,7 @@ Display.prototype.init = function(event) {
     this.stage.mouseMoveOutside = true;
     this.container = new createjs.Container();
     this.stage.addChild(this.container);
-    //this.balls.alpha = 0.5;
-    //this.fiori = [];
+    this.scoreBoard = document.getElementById('scoreboard');
     createjs.Touch.enable(this.stage);
     createjs.Ticker.addEventListener("tick", function(event) {
         self.tick(event);
@@ -61,8 +61,10 @@ Display.prototype.draw = function() {
     this.container.removeAllEventListeners();
     this.board = new createjs.Container();
     this.container.addChild(this.board);
-    this.balls = new createjs.Container();
-    this.container.addChild(this.balls);
+    this.tiles = new createjs.Container();
+    this.board.addChild(this.tiles);
+    this.pegs = new createjs.Container();
+    this.board.addChild(this.pegs);
     this.canvas.width = w;
     this.canvas.height = h;
     for (var i = 0; i < this.grid.cells.length; i++) {
@@ -79,11 +81,12 @@ Display.prototype.draw = function() {
             this.addNewBall(tile);
         };
     };
-    this.container.x = w / 2 - (this.size * unit / 2);
-    this.container.y = h / 2 - (this.size * unit / 2);
+    this.board.x = w / 2 - (this.size * unit / 2);
+    this.board.y = h / 2 - (this.size * unit / 2);
     this.update = true;
 };
-Display.prototype.render = function(grid, metadata) {
+Display.prototype.render = function(grid, gameStatus) {
+    this.gameStatus = gameStatus;
     this.size = grid.size;
     this.grid = grid;
     this.draw();
@@ -103,113 +106,133 @@ Display.prototype.emit = function(event, data) {
     }
 };
 Display.prototype.moveTile = function(move) {
-    var b = this.tiles[move.eaten];
-    var t1 = this.tiles[move.from_n];
-    this.tiles[move.to_n] = t1;
+    var b = this.balls[move.eaten];
+    var t1 = this.balls[move.from_n];
+    this.balls[move.to_n] = t1;
     t1.n = move.to_n;
-    this.balls.removeChild(b);
+    this.pegs.removeChild(b);
 };
 Display.prototype.setAvailableMoves = function(moves) {
     this.availableMoves = moves;
 };
 Display.prototype.pressup = function(evt) {
-    var t = evt.target;
-    t.scaleX = t.scaleY = t.scale;
-    if (!this.moved) {
-        var o = evt.currentTarget;
-        o.x = o.start.x;
-        o.y = o.start.y;
-    } else {
-        this.moved = false;
+    if (this.gameStatus) {
+        var t = evt.target;
+        t.scaleX = t.scaleY = t.scale;
+        if (!this.moved) {
+            var o = evt.currentTarget;
+            o.x = o.start.x;
+            o.y = o.start.y;
+        } else {
+            this.moved = false;
+        }
+        this.update = true;
     }
-    this.update = true;
 }
 Display.prototype.mousedown = function(evt) {
-    var t = evt.target;
-    t.scaleX = t.scaleY = t.scale * 1.04;
-    var o = evt.currentTarget;
-    o.parent.addChild(o);
-    o.offset = {
-        x: o.x - evt.stageX,
-        y: o.y - evt.stageY
-    };
-    o.start = {
-        x: o.x,
-        y: o.y
-    };
-    this.emit("mousedown", {
-        x: o.x,
-        y: o.y,
-        n: o.n
-    });
+    if (this.gameStatus) {
+        var t = evt.target;
+        t.scaleX = t.scaleY = t.scale * 1.04;
+        var o = evt.currentTarget;
+        o.parent.addChild(o);
+        o.offset = {
+            x: o.x - evt.stageX,
+            y: o.y - evt.stageY
+        };
+        o.start = {
+            x: o.x,
+            y: o.y
+        };
+        this.emit("mousedown", {
+            x: o.x,
+            y: o.y,
+            n: o.n
+        });
+    }
 }
 Display.prototype.pressmove = function(evt) {
-    var o = evt.currentTarget;
-    if (this.availableMoves && !this.moved) {
-        var move = false;
-        var dx = Math.abs(o.x - o.start.x);
-        var dy = Math.abs(o.y - o.start.y);
-        var tolerance = 4;
-        if (dx > tolerance || dy > tolerance) {
-            if (dx > dy) {
-                if (this.availableMoves.left && o.x <= o.start.x) {
-                    var tile = this.grid.getTile(this.availableMoves.left);
-                    o.x = evt.stageX + o.offset.x;
-                    o.y = tile.y;
-                    if (o.x < tile.x + (tile.width / 2)) {
-                        move = true;
+    if (this.gameStatus) {
+        var o = evt.currentTarget;
+        if (this.availableMoves && !this.moved) {
+            var move = false;
+            var dx = Math.abs(o.x - o.start.x);
+            var dy = Math.abs(o.y - o.start.y);
+            var tolerance = 4;
+            if (dx > tolerance || dy > tolerance) {
+                if (dx > dy) {
+                    if (this.availableMoves.left && o.x <= o.start.x) {
+                        var tile = this.grid.getTile(this.availableMoves.left);
+                        o.x = evt.stageX + o.offset.x;
+                        o.y = tile.y;
+                        if (o.x < tile.x + (tile.width / 2)) {
+                            move = true;
+                        }
                     }
-                }
-                if (this.availableMoves.right && o.x >= o.start.x) {
-                    var tile = this.grid.getTile(this.availableMoves.right);
-                    o.x = evt.stageX + o.offset.x;
-                    o.y = tile.y;
-                    if (o.x > tile.x - (tile.width / 2)) {
-                        move = true;
+                    if (this.availableMoves.right && o.x >= o.start.x) {
+                        var tile = this.grid.getTile(this.availableMoves.right);
+                        o.x = evt.stageX + o.offset.x;
+                        o.y = tile.y;
+                        if (o.x > tile.x - (tile.width / 2)) {
+                            move = true;
+                        }
+                    }
+                } else {
+                    if (this.availableMoves.down && o.y >= o.start.y) {
+                        var tile = this.grid.getTile(this.availableMoves.down);
+                        o.y = evt.stageY + o.offset.y;
+                        o.x = tile.x;
+                        if (o.y > tile.y - (tile.height / 2)) {
+                            move = true;
+                        }
+                    }
+                    if (this.availableMoves.up && o.y <= o.start.y) {
+                        var tile = this.grid.getTile(this.availableMoves.up);
+                        o.y = evt.stageY + o.offset.y;
+                        o.x = tile.x;
+                        if (o.y < tile.y + (tile.height / 2)) {
+                            move = true;
+                        }
                     }
                 }
             } else {
-                if (this.availableMoves.down && o.y >= o.start.y) {
-                    var tile = this.grid.getTile(this.availableMoves.down);
-                    o.y = evt.stageY + o.offset.y;
-                    o.x = tile.x;
-                    if (o.y > tile.y - (tile.height / 2)) {
-                        move = true;
-                    }
-                }
-                if (this.availableMoves.up && o.y <= o.start.y) {
-                    var tile = this.grid.getTile(this.availableMoves.up);
-                    o.y = evt.stageY + o.offset.y;
-                    o.x = tile.x;
-                    if (o.y < tile.y + (tile.height / 2)) {
-                        move = true;
-                    }
-                }
+                o.y = evt.stageY + o.offset.y;
+                o.x = evt.stageX + o.offset.x;
             }
-        } else {
-            o.y = evt.stageY + o.offset.y;
-            o.x = evt.stageX + o.offset.x;
+            if (move) {
+                this.emit("pressup", {
+                    n: o.n,
+                    to_n: tile.n
+                });
+                o.x = tile.x;
+                o.y = tile.y;
+                this.moved = true;
+            }
         }
-        if (move) {
-            this.emit("pressup", {
-                n: o.n,
-                to_n: tile.n
-            });
-            o.x = tile.x;
-            o.y = tile.y;
-            this.moved = true;
-        }
+        this.update = true;
     }
-    this.update = true;
 }
 Display.prototype.rollover = function(evt) {
     evt.target.scaleX = evt.target.scaleY = evt.target.scale;
     this.update = true;
-}
+};
 Display.prototype.rollout = function(evt) {
     evt.target.scaleX = evt.target.scaleY = evt.target.scale;
     this.update = true;
-}
+};
+Display.prototype.displayWin = function() {
+    var sp1 = document.createElement("span");
+    sp1.setAttribute("id", "score");
+    sp1.appendChild(document.createTextNode('Pegu!'));
+    var sp2 = document.getElementById("score");
+    this.scoreBoard.replaceChild(sp1, sp2);
+};
+Display.prototype.setScore = function(score) {
+    var sp1 = document.createElement("span");
+    sp1.setAttribute("id", "score");
+    sp1.appendChild(document.createTextNode(score));
+    var sp2 = document.getElementById("score");
+    this.scoreBoard.replaceChild(sp1, sp2);
+};
 Display.prototype.addNewBall = function(tile) {
     var self = this;
     if (tile.isball && tile.istile) {
@@ -229,10 +252,12 @@ Display.prototype.addNewBall = function(tile) {
         ball.x = tile.x;
         ball.y = tile.y;
         ball.n = tile.n;
-        ball.cursor = 'pointer';
+        if (this.gameStatus) {
+            ball.cursor = 'pointer';
+        }
         ball.addChild(s);
-        this.tiles[tile.n] = ball;
-        this.balls.addChild(ball);
+        this.balls[tile.n] = ball;
+        this.pegs.addChild(ball);
         ball.addEventListener("pressup", function(evt) {
             self.pressup(evt)
         });
@@ -259,7 +284,7 @@ Display.prototype.addNewTile = function(tile) {
         square.x = tile.x;
         square.y = tile.y;
         square.addChild(s);
-        this.board.addChild(square);
+        this.tiles.addChild(square);
     }
     this.update = true;
 };
