@@ -16,7 +16,7 @@ window.bkStorage = {
 
 function LocalStorage() {
     //this.bestScoreKey     = "bestScore";
-    this.levelID = "levelID";
+    this.levelID = "pegu_level";
     var supported = this.localStorageSupported();
     this.storage = supported ? window.localStorage : window.bkStorage;
 }
@@ -49,17 +49,17 @@ LocalStorage.prototype.clearLevel = function() {
 };
 // Game state getters/setters and clearing
 LocalStorage.prototype.getLevel = function(levelID) {
-    var stateJSON = this.storage.getItem('game_level_' + levelID);
+    var stateJSON = this.storage.getItem('pegu_level_' + levelID);
     return stateJSON ? JSON.parse(stateJSON) : null;
 };
 LocalStorage.prototype.setLevel = function(gameState) {
-    var stateKey = 'game_level_' + gameState.level;
+    var stateKey = 'pegu_level_' + gameState.level;
     this.storage.setItem(stateKey, JSON.stringify(gameState));
 };
 LocalStorage.prototype.setGameStatus = function(status) {
-    this.storage.setItem('gameStatus', status);
+    this.storage.setItem('pegu_status', status);
 };
 LocalStorage.prototype.getGameStatus = function() {
-    return this.storage.getItem('gameStatus') || 0;
+    return this.storage.getItem('pegu_status') || 0;
 };
 
