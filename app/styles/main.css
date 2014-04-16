@@ -220,11 +220,12 @@ p.play {
    }
    #buttons {
        font-size: 30px;
-       top: 60px;
+       top: 70px;
   }
   #panel {
       font-size: 50px;
-      top: 30px;
+      height:100%;
+      bottom: 30px;
  }
  #scoreboard {
      font-size: 20px;
@@ -240,11 +241,12 @@ p.play {
    }
    #buttons {
        font-size: 30px;
-        top: 60px;
+        top: 70px;
   }
   #panel {
          font-size: 50px;
-      top: 30px;
+         height:100%;
+      bottom: 30px;
  }
  #scoreboard {
      font-size: 20px;
