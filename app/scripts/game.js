@@ -1,5 +1,6 @@
-function Game(Storage) {
+function Game(Storage,Social) {
     this.storage = new Storage;
+    this.social = new Social;
     this.ison = false;
     this.init();
 }
@@ -112,3 +113,18 @@ Game.prototype.saveState = function() {
         });
     }
 };
+
+
+Game.prototype.isopenSocial = function(){
+    return this.social.isopen();
+}
+
+
+
+Game.prototype.openSocial = function(){
+    this.social.addLayer();
+}
+
+Game.prototype.closeSocial = function(){
+    this.social.destroyLayer();
+}

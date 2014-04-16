@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    var game = new Game(LocalStorage);
+    var game = new Game(LocalStorage,Social);
     if (game.getGameStatus() == 1) {
         $('header').hide();
         $('.game_asset').show('500');
@@ -33,6 +33,19 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         game.previousLevel();
     });
+
+    $('#sharebtn').on('click', function(event) {
+        event.preventDefault();
+
+if(game.isopenSocial()){
+game.closeSocial();
+}else{
+    game.openSocial();
+}
+
+        
+    });
+
     $(window).unload(function() {
         game.saveState();
     });

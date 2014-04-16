@@ -1,4 +1,6 @@
 function Display() {
+ 
+ 
     this.events = {};
     this.availableMoves = {
         up: false,
@@ -46,6 +48,7 @@ Display.prototype.tutorial = function() {
 };
 Display.prototype.auto = function() {}
 Display.prototype.init = function(event) {
+   
     var self = this;
     var canvas_holder = document.getElementById('canvasHolder');
     var canvas = document.createElement('canvas');
@@ -76,6 +79,8 @@ Display.prototype.init = function(event) {
             self.draw();
         }, 100);
     });
+
+    
 }
 Display.prototype.eachChildren = function(container, callback) {
     for (var x = 0; x < container.children.length; x++) {
