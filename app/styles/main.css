@@ -166,8 +166,8 @@ margin:30px auto 60px auto;
 
 #buttons{
     position:fixed;
-    right:0;
-    top:80px;
+    right:60px;
+    top:0px;
     padding:30px;
     font-size:40px;
     display:none;
