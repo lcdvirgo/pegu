@@ -1,5 +1,4 @@
 function Game(Storage) {
-    //this.storageManager = new Storage;
     this.storage = new Storage;
     this.ison = false;
     this.init();
@@ -17,7 +16,7 @@ Game.prototype.pressup = function(move) {
     }
 }
 Game.prototype.pressmove = function() {
-    //debugger;
+
 }
 Game.prototype.init = function() {
     this.levels = this.readLevels();
