@@ -212,3 +212,28 @@ p.play {
     margin-right: auto;
     display: block;
 }
+
+
+@media only screen and (min-device-width: 640px) and (max-device-width: 960px) {
+#info {
+
+    font-size: 10px;
+
+}
+#buttons {
+
+    font-size: 40px;
+
+}
+#panel {
+
+    font-size: 20px;
+
+}
+#scoreboard {
+
+    font-size: 10px;
+
+}
+}
+
