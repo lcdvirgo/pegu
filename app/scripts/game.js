@@ -27,12 +27,20 @@ Game.prototype.addPoints = function() {
     this.displayPoints();
 }
 Game.prototype.displayPoints = function() {
-    if (this.score == 1) {
-        this.display.displayWin();
+    var self = this;
+    if (this.score == 0) {
+        this.display.displayText('Pegu!');
+        this.display.setScore('');
+        setTimeout(function() {
+            self.nextLevel();
+        }, 1000)
     } else {
-        this.display.setScore(this.score);
+        this.display.setScore(this.score + ' moves left');
     }
-}
+};
+Game.prototype.displayLevelName = function(level_name) {
+    this.display.displayLevelName(level_name);
+};
 Game.prototype.readLevels = function() {
     var res;
     $.ajax({
@@ -47,7 +55,8 @@ Game.prototype.readLevels = function() {
 Game.prototype.render = function() {
     this.levelID = this.levelID < 0 ? this.levels.length - 1 : this.levelID;
     this.levelID = this.levels[this.levelID] ? this.levelID : 0;
-    var defaultScore = this.levels[this.levelID].currentScheme.length - this.levels[this.levelID].emptySpots.length;
+    this.level_name = this.levels[this.levelID].name;
+    var defaultScore = this.levels[this.levelID].currentScheme.length - this.levels[this.levelID].emptySpots.length - 1;
     if (this.getGameStatus()) {
         this.storage.setLevelID(this.levelID);
     }
@@ -55,6 +64,7 @@ Game.prototype.render = function() {
     this.score = this.level ? this.level.score : defaultScore;
     this.grid = new Grid(this.level, this.levels[this.levelID]);
     this.display.render(this.grid, this.getGameStatus());
+    this.displayLevelName(this.level_name);
     this.displayPoints();
 };
 Game.prototype.getGameStatus = function() {
@@ -66,21 +76,15 @@ Game.prototype.tutorial = function() {
 Game.prototype.start = function() {
     var self = this;
     this.levelID = this.storage.getLevelID() || 0;
-
-
-
-
     if (this.storage.getGameStatus() == 0) {
         setTimeout(function() {
             self.display.tutorial();
-
-        }, 1500);
+        }, 200);
     }
-
     this.storage.setGameStatus(1);
-        this.render();
-                this.display.on("mousedown", this.mousedown.bind(this));
-        this.display.on("pressup", this.pressup.bind(this));
+    this.render();
+    this.display.on("mousedown", this.mousedown.bind(this));
+    this.display.on("pressup", this.pressup.bind(this));
 };
 Game.prototype.restart = function() {
     this.storage.clearLevel();
@@ -101,7 +105,8 @@ Game.prototype.saveState = function() {
         this.storage.setLevel({
             grid: this.grid.serialize(),
             score: this.score,
-            level: this.levelID
+            level: this.levelID,
+            name: this.level_name
         });
     }
 };

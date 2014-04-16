@@ -12,8 +12,6 @@ Tile.prototype.updateState = function(state) {
     this.y = state.y;
     this.width = state.width;
     this.height = state.height;
-
-
 };
 Tile.prototype.addBall = function() {
     this.isball = true;
@@ -21,13 +19,10 @@ Tile.prototype.addBall = function() {
 Tile.prototype.removeBall = function() {
     this.isball = false;
 }
-
-Tile.prototype.serialize = function () {
-  return {
-
-      n: this.n,
-
-    isball: this.isball,
-    istile: this.istile
-  };
+Tile.prototype.serialize = function() {
+    return {
+        n: this.n,
+        isball: this.isball,
+        istile: this.istile
+    };
 };

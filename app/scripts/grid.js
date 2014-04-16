@@ -3,17 +3,11 @@ function Grid(storage, level) {
     this.level = level;
     this.storage = storage;
     this.cells = this.build();
-
 }
 Grid.prototype.build = function() {
     var cells = [];
     var n = 1;
-
-
     var scheme = this.storage ? this.storage.grid : this.level;
-
-
-
     for (var x = 0; x < this.size; x++) {
         var row = cells[x] = [];
         for (var y = 0; y < this.size; y++) {

@@ -20,42 +20,31 @@ Display.prototype.tick = function(event) {
     }
 }
 Display.prototype.tutorial = function() {
+    this.displayText('It\'s Easy!');
     var self = this;
     self.update = self.animating = true;
     var target = this.pegs.getChildAt(0);
     var target2 = this.pegs.getChildAt(1);
     var target3 = this.pegs.getChildAt(3);
-
-
-                this.emit("mousedown", {
-                    n: target.n
-                });
-
-
-    createjs.Tween.get(target)
-    .wait(500)
-    .to({
+    this.emit("mousedown", {
+        n: target.n
+    });
+    createjs.Tween.get(target).wait(1500).call(function() {
+        self.update = self.animating = true;
+    }).to({
         x: target3.x,
         y: target.y
-    }, 500)
-    .call(function() {
-                       self.emit("pressup", {
-                    n: target.n,
-                    to_n: self.availableMoves.right
-                });
-    })
-    .wait(500)
-    .call(function() {
-         self.animating = false;
+    }, 500).call(function() {
+        self.displayText('Try');
+        self.emit("pressup", {
+            n: target.n,
+            to_n: self.availableMoves.right
+        });
+    }).wait(500).call(function() {
+        self.animating = false;
     });
-}
-
-
-Display.prototype.auto = function(){}
-
-
-
-
+};
+Display.prototype.auto = function() {}
 Display.prototype.init = function(event) {
     var self = this;
     var canvas_holder = document.getElementById('canvasHolder');
@@ -73,6 +62,8 @@ Display.prototype.init = function(event) {
     this.container = new createjs.Container();
     this.stage.addChild(this.container);
     this.scoreBoard = document.getElementById('scoreboard');
+    this.textBoard = document.getElementById('panel');
+    this.infoBoard = document.getElementById('info');
     createjs.Touch.enable(this.stage);
     createjs.Ticker.addEventListener("tick", function(event) {
         self.tick(event);
@@ -92,11 +83,12 @@ Display.prototype.eachChildren = function(container, callback) {
     }
 };
 Display.prototype.draw = function() {
+    this.displayText(' ');
     createjs.Tween.removeAllTweens();
     var w = window.innerWidth;
     var h = window.innerHeight;
     var m = Math.min(w, h);
-    var unit = m / (this.size + 1 || 8);
+    var unit = m / (this.size + 3 || 8);
     this.container.removeAllChildren();
     this.container.removeAllEventListeners();
     this.board = new createjs.Container();
@@ -239,7 +231,6 @@ Display.prototype.pressmove = function(evt) {
                 o.x = evt.stageX + o.offset.x;
             }
             if (move) {
-
                 this.emit("pressup", {
                     n: o.n,
                     to_n: tile.n
@@ -260,12 +251,19 @@ Display.prototype.rollout = function(evt) {
     evt.target.scaleX = evt.target.scaleY = evt.target.scale;
     this.update = true;
 };
-Display.prototype.displayWin = function() {
+Display.prototype.displayLevelName = function(text) {
     var sp1 = document.createElement("span");
-    sp1.setAttribute("id", "score");
-    sp1.appendChild(document.createTextNode('Pegu!'));
-    var sp2 = document.getElementById("score");
-    this.scoreBoard.replaceChild(sp1, sp2);
+    sp1.setAttribute("id", "level_name");
+    sp1.appendChild(document.createTextNode(text));
+    var sp2 = document.getElementById("level_name");
+    this.infoBoard.replaceChild(sp1, sp2);
+};
+Display.prototype.displayText = function(text) {
+    var sp1 = document.createElement("span");
+    sp1.setAttribute("id", "textnode");
+    sp1.appendChild(document.createTextNode(text));
+    var sp2 = document.getElementById("textnode");
+    this.textBoard.replaceChild(sp1, sp2);
 };
 Display.prototype.setScore = function(score) {
     var sp1 = document.createElement("span");
@@ -295,7 +293,7 @@ Display.prototype.addNewBall = function(tile) {
         createjs.Tween.get(s).wait(tile.n * 10).to({
             scaleX: 1,
             scaleY: 1
-        }, 500, createjs.Ease.bounceOut).wait(500).call(function() {
+        }, 300, createjs.Ease.bounceOut).wait(400).call(function() {
             self.animating = false;
         });
         ball.name = 'ball_' + tile.n;

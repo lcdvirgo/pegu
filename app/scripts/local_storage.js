@@ -15,7 +15,6 @@ window.bkStorage = {
 };
 
 function LocalStorage() {
-
     this.levelID = "pegu_level";
     var supported = this.localStorageSupported();
     this.storage = supported ? window.localStorage : window.bkStorage;
@@ -31,7 +30,6 @@ LocalStorage.prototype.localStorageSupported = function() {
         return false;
     }
 };
-
 LocalStorage.prototype.setLevelID = function(levelID) {
     this.storage.setItem(this.levelID, levelID);
 };
@@ -56,4 +54,3 @@ LocalStorage.prototype.setGameStatus = function(status) {
 LocalStorage.prototype.getGameStatus = function() {
     return this.storage.getItem('pegu_status') || 0;
 };
-
