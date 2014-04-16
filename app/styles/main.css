@@ -168,7 +168,7 @@ p.play {
     padding: 0px;
     font-size: 40px;
     display: none;
-    z-index: 2;
+    z-index: 11;
     width: 200px;
     text-align: right;
 }
@@ -230,7 +230,7 @@ p.play {
   }
   #panel {
       font-size: 50px;
-
+height:100%;
       bottom: 30px;
  }
  #scoreboard {
@@ -251,7 +251,7 @@ p.play {
   }
   #panel {
          font-size: 50px;
-     
+     height:100%;
       bottom: 30px;
  }
  #scoreboard {
