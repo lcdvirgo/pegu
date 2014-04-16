@@ -216,9 +216,10 @@ p.play {
 @media only screen and (min-device-width: 640px) and (max-device-width: 960px) {
     #info {
         font-size: 10px;
+        padding: 10px 0;
    }
    #buttons {
-       font-size: 30px;
+       font-size: 20px;
        top: 50px;
   }
   #panel {
@@ -233,9 +234,10 @@ p.play {
 @media screen and (device-aspect-ratio: 40/71) {
     #info {
         font-size: 15px;
+        padding: 10px 0;
    }
    #buttons {
-       font-size: 30px;
+       font-size: 20px;
         top: 50px;
   }
   #panel {
