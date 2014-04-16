@@ -47,10 +47,22 @@ Game.prototype.readLevels = function() {
     return res;
 };
 Game.prototype.render = function() {
+
+
+
+
     this.levelID = this.levelID < 0 ? this.levels.length - 1 : this.levelID;
     this.levelID = this.levels[this.levelID] ? this.levelID : 0;
     var defaultScore = this.levels[this.levelID].currentScheme.length - this.levels[this.levelID].emptySpots.length;
-    this.storage.setLevelID(this.levelID);
+
+if(this.getGameStatus()){
+            this.storage.setLevelID(this.levelID);
+
+}
+
+
+
+
     this.level = this.storage.getLevel(this.levelID);
     this.score = this.level ? this.level.score : defaultScore;
     this.grid = new Grid(this.level, this.levels[this.levelID]);
@@ -62,7 +74,7 @@ Game.prototype.getGameStatus = function() {
     return this.storage.getGameStatus();
 }
 Game.prototype.start = function() {
-    this.levelID = 0;
+    this.levelID = this.storage.getLevelID()||0;
 
     this.storage.setGameStatus(1);
     this.render();
@@ -84,6 +96,7 @@ Game.prototype.previousLevel = function() {
     this.render();
 };
 Game.prototype.saveState = function() {
+
     if (this.grid) {
         this.storage.setLevel({
             grid: this.grid.serialize(),
