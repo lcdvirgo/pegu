@@ -125,6 +125,7 @@ body {
     color: #333;
     font-weight: 400;
     color: #53324f;
+    overflow:hidden;
 }
 header {
     margin: 0 auto;
