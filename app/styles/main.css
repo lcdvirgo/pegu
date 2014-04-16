@@ -223,11 +223,12 @@ p.play {
        top: 60px;
   }
   #panel {
-      font-size: 20px;
+      font-size: 50px;
+      top: 30px;
  }
  #scoreboard {
      font-size: 20px;
-     top:35px;
+     top:40px;
      padding: 0px 0;
 }
 }
@@ -242,11 +243,12 @@ p.play {
         top: 60px;
   }
   #panel {
-      font-size: 20px;
+         font-size: 50px;
+      top: 30px;
  }
  #scoreboard {
      font-size: 20px;
-        top:35px;
+        top:40px;
         padding: 0px 0;
 }
 }
