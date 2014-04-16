@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
-    <title>Pegu. A little HTML5 game. Pre-alpha. Developed by Albino Tonnina.</title>
+    <title>Pegu. A classic solitaire. Developed by Albino Tonnina.</title>
     <meta name="description" content="">
     <link rel="shortcut icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
@@ -16,6 +16,25 @@
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@albinotonnina">
+        <meta name="twitter:title" content="Pegu. A classic solitaire.">
+        <meta name="twitter:description" content="A very old puzzle game!">
+        <meta name="twitter:creator" content="@albinotonnina.com">
+        <meta name="twitter:image" content="http://www.pegu.it/images/twitter.jpg">
+        <meta property="og:title" content="Pegu. A classic solitaire." />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://www.pegu.it/" />
+        <meta property="og:image" content="http://www.pegu.it/images/facebook.jpg" />
+        <meta property="og:description" content="A very old puzzle game!" />
+        <meta property="og:site_name" content="Pegu!" />
+        <!--
+        <meta property="fb:admins" content="Facebook numeric ID" />
+        -->
+        <link rel="apple-touch-icon" href="ios/icon.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="images/icon-72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="images/icon@2x.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="images/icon-72@2x.png" />
     </head>
     <body>
         <!--[if lt IE 10]>
@@ -26,7 +45,7 @@
             <p>Done with <a href="http://gabrielecirulli.github.io/2048/" target="_blank">2048?</a><br>Meet</p>
             <h1 class="title">Pegu</h1>
             <p>a <a href="http://en.wikipedia.org/wiki/Peg_solitaire" target="_blank">classic</a> solitaire. </p>
-            <p class="instructions">Developed by <a href="http://www.albinotonnina.com" target="_blank">Albino Tonnina</a></p>
+            <p class="instructions">by <a href="http://www.albinotonnina.com" target="_blank">Albino Tonnina</a></p>
             <p class="play"><a href="play the game">play</a></p>
         </header>
         <div id="info" class="game_asset">
@@ -62,7 +81,6 @@
     </script>
     <script async src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-507ff8062a45d6fb"></script>
     <!-- build:js({app,.tmp}) scripts/main.js -->
-
     <script src="scripts/tile.js"></script>
     <script src="scripts/grid.js"></script>
     <script src="scripts/display.js"></script>
