@@ -212,31 +212,37 @@ p.play {
     margin-right: auto;
     display: block;
 }
+/* iphone 4 */
 @media only screen and (min-device-width: 640px) and (max-device-width: 960px) {
     #info {
         font-size: 10px;
    }
    #buttons {
-       font-size: 40px;
+       font-size: 30px;
+       top: 50px;
   }
   #panel {
       font-size: 20px;
  }
  #scoreboard {
      font-size: 10px;
+     top:35px;
 }
 }
+/* iphone 5 */
 @media screen and (device-aspect-ratio: 40/71) {
     #info {
-        font-size: 10px;
+        font-size: 15px;
    }
    #buttons {
-       font-size: 40px;
+       font-size: 30px;
+        top: 50px;
   }
   #panel {
       font-size: 20px;
  }
  #scoreboard {
      font-size: 10px;
+        top:35px;
 }
 }
