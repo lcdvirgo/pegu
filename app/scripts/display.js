@@ -13,10 +13,49 @@ function Display() {
 }
 Display.prototype.tick = function(event) {
     if (this.update) {
-        this.update = false; // only update once
+        if (!this.animating) {
+            this.update = false;
+        }
         this.stage.update(event);
     }
 }
+Display.prototype.tutorial = function() {
+    var self = this;
+    self.update = self.animating = true;
+    var target = this.pegs.getChildAt(0);
+    var target2 = this.pegs.getChildAt(1);
+    var target3 = this.pegs.getChildAt(3);
+
+
+                this.emit("mousedown", {
+                    n: target.n
+                });
+
+
+    createjs.Tween.get(target)
+    .wait(500)
+    .to({
+        x: target3.x,
+        y: target.y
+    }, 500)
+    .call(function() {
+                       self.emit("pressup", {
+                    n: target.n,
+                    to_n: self.availableMoves.right
+                });
+    })
+    .wait(500)
+    .call(function() {
+         self.animating = false;
+    });
+}
+
+
+Display.prototype.auto = function(){}
+
+
+
+
 Display.prototype.init = function(event) {
     var self = this;
     var canvas_holder = document.getElementById('canvasHolder');
@@ -53,6 +92,7 @@ Display.prototype.eachChildren = function(container, callback) {
     }
 };
 Display.prototype.draw = function() {
+    createjs.Tween.removeAllTweens();
     var w = window.innerWidth;
     var h = window.innerHeight;
     var m = Math.min(w, h);
@@ -199,6 +239,7 @@ Display.prototype.pressmove = function(evt) {
                 o.x = evt.stageX + o.offset.x;
             }
             if (move) {
+
                 this.emit("pressup", {
                     n: o.n,
                     to_n: tile.n
@@ -248,6 +289,15 @@ Display.prototype.addNewBall = function(tile) {
         s.regY = size.height / 2;
         s.x = tile.width / 2;
         s.y = tile.height / 2;
+        this.animating = this.update = true;
+        s.scaleX = 0;
+        s.scaleY = 0;
+        createjs.Tween.get(s).wait(tile.n * 10).to({
+            scaleX: 1,
+            scaleY: 1
+        }, 500, createjs.Ease.bounceOut).wait(500).call(function() {
+            self.animating = false;
+        });
         ball.name = 'ball_' + tile.n;
         ball.x = tile.x;
         ball.y = tile.y;

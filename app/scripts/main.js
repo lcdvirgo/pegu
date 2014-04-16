@@ -30,6 +30,7 @@ jQuery(document).ready(function($) {
     $('#refresh').on('click', function(event) {
         event.preventDefault();
         game.restart();
+        
     });
     $('#next').on('click', function(event) {
         event.preventDefault();
