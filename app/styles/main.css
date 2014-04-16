@@ -212,6 +212,12 @@ p.play {
     margin-right: auto;
     display: block;
 }
+
+
+#canvasHolder{
+    position:relative;
+    z-index:10;
+}
 /* iphone 4 */
 @media only screen and (min-device-width: 640px) and (max-device-width: 960px) {
     #info {
