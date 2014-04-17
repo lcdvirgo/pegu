@@ -48,7 +48,24 @@ Grid.prototype.serialize = function() {
     //     cells: cellState
     // };
 };
-Grid.prototype.movesAvailable = function(n) {
+
+
+Grid.prototype.getBalls = function() {
+
+
+    var res = [];
+    this.eachCell(function(x, y, tile) {
+       if(tile.isball){
+            res.push(tile);
+       }
+       
+    });
+    return res;
+
+};
+
+
+Grid.prototype.movesArray = function(n) {
     var availableMoves = {
         up: false,
         right: false,
@@ -124,7 +141,12 @@ Grid.prototype.moveTile = function(n, to_n) {
     var res = {
         to_n: tiles.to_n.n,
         from_n: tiles.from_n.n,
-        eaten: tiles.eaten.n
+        eaten: tiles.eaten.n,
+        final_position: {
+            x:tiles.to_n.x,
+            y:tiles.to_n.y
+
+        }
     }
     return res;
 };

@@ -1,8 +1,12 @@
+
+
 jQuery(document).ready(function($) {
-    var game = new Game(LocalStorage,Social,Sound);
+    game = new Game(LocalStorage,Social,Sound);
     if (game.getGameStatus() == 1) {
         $('header').hide();
-        $('.game_asset').show('500');
+        $('.game_asset').show('500',function(){
+            
+        });
         game.start();
     } else {
         $('header').show('500');
@@ -11,10 +15,18 @@ jQuery(document).ready(function($) {
     $('.play a').on('click', function(event) {
         event.preventDefault();
         $('header').hide('500');
-        $('.game_asset').show('500');
+        $('.game_asset').show('500',function(){
+
+
+
+        });
+
+
         if (game.getGameStatus() == 1) {} else {
             game.start();
         }
+
+
     });
     $('#infobtn').on('click', function(event) {
         event.preventDefault();

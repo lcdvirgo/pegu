@@ -175,7 +175,7 @@ p.play {
 #panel {
     position: fixed;
     left: 0;
-    top: 30px;
+    top: 0px;
     width: 100%;
     font-size: 60px;
     padding: 20px 0;

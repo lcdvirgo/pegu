@@ -39,7 +39,7 @@ LocalStorage.prototype.getLevelID = function() {
 LocalStorage.prototype.clearLevel = function() {
     this.storage.removeItem('pegu_level_' + this.getLevelID());
 };
-// Game state getters/setters and clearing
+
 LocalStorage.prototype.getLevel = function(levelID) {
     var stateJSON = this.storage.getItem('pegu_level_' + levelID);
     return stateJSON ? JSON.parse(stateJSON) : null;

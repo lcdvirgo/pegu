@@ -1,6 +1,4 @@
 function Display() {
- 
- 
     this.events = {};
     this.availableMoves = {
         up: false,
@@ -22,86 +20,99 @@ Display.prototype.tick = function(event) {
     }
 }
 Display.prototype.tutorial = function() {
-
-
-
-
-
     this.displayText('It\'s Easy!');
     var self = this;
     self.update = self.animating = true;
     var target = this.pegs.getChildAt(0);
     var target2 = this.pegs.getChildAt(1);
     var target3 = this.pegs.getChildAt(3);
+    var target4 = this.tiles.getChildAt(6);
+
+    var bitmap = new createjs.Bitmap("images/hand.png");
+    this.board.addChild(bitmap);
+    bitmap.y = 0 - 200;
+    bitmap.x = target.x;
+        createjs.Tween.get(bitmap)
+                .call(function() {
+            self.update = self.animating = true;
+        })
+         .wait(300)   
+        .to({
+            x: target.x + 20,
+            y: target.y + 20
+        }, 200)
+        .wait(500)
+
+        .to({
+            x: target3.x + 20,
+            y: target.y + 20
+        }, 200)
+        .call(function() {
+
+        })
 
 
+    .wait(1000)
+    .call(function() {
+        
 
+    })
+    .to({
+        x: target4.x + 20,
+        y: target4.y + 20,
+        alpha:0
+    }, 200)
 
-// var bitmap = new createjs.Bitmap("images/hand.png");
+        .call(function() {
+            self.animating = false;
+        });
 
-// this.board.addChild(bitmap);
+    createjs.Tween.get(target)
+    .wait(1000)
+    .call(function() {
 
-
-// bitmap.y = 0 - 200;
-// bitmap.x = target.x;
-//     createjs.Tween.get(bitmap)
-
-//     .to({
-//         x: target.x,
-//         y: target.y
-//     }, 500)
-
-
-//     .wait(500)
-
-
-//     .call(function() {
-//         self.update = self.animating = true;
-//     })
-
-//     .to({
-//         x: target3.x,
-//         y: target.y
-//     }, 500)
-
-//     .call(function() {
-//         self.displayText('Try');
-//         self.emit("pressup", {
-//             n: target.n,
-//             to_n: self.availableMoves.right
-//         });
-//     })
-
-//     .wait(500)
-
-//     .call(function() {
-//         self.animating = false;
-//     });
-
-
-
-
-    this.emit("mousedown", {
+    self.emit("mousedown", {
         n: target.n
     });
-    createjs.Tween.get(target).wait(1000).call(function() {
         self.update = self.animating = true;
-    }).to({
+    })
+    .to({
         x: target3.x,
         y: target.y
-    }, 500).call(function() {
+    }, 200)
+    .call(function() {
         self.displayText('Try');
         self.emit("pressup", {
             n: target.n,
             to_n: self.availableMoves.right
         });
-    }).wait(500).call(function() {
-        self.animating = false;
+    })
+    .wait(1000)
+    .call(function() {
+        
+    self.emit("mousedown", {
+        n: target.n
     });
+        self.update = self.animating = true;
+    })
+    .to({
+        x: target4.x,
+        y: target4.y
+    }, 200)
+    .call(function() {
+        self.displayText('Try');
+        self.emit("pressup", {
+            n: target.n,
+            to_n: self.availableMoves.down
+        });
+    })
+
+
+
+    ;
 };
 Display.prototype.auto = function() {}
 Display.prototype.init = function(event) {
-   
     var self = this;
     var canvas_holder = document.getElementById('canvasHolder');
     var canvas = document.createElement('canvas');
@@ -132,8 +143,6 @@ Display.prototype.init = function(event) {
             self.draw();
         }, 100);
     });
-
-    
 }
 Display.prototype.eachChildren = function(container, callback) {
     for (var x = 0; x < container.children.length; x++) {
@@ -141,6 +150,7 @@ Display.prototype.eachChildren = function(container, callback) {
     }
 };
 Display.prototype.draw = function() {
+    this.emit("draw_board");
     this.displayText(' ');
     createjs.Tween.removeAllTweens();
     var w = window.innerWidth;
@@ -195,11 +205,17 @@ Display.prototype.emit = function(event, data) {
         });
     }
 };
-Display.prototype.moveTile = function(move) {
+Display.prototype.moveTile = function(move, is_short) {
     var b = this.balls[move.eaten];
     var t1 = this.balls[move.from_n];
     this.balls[move.to_n] = t1;
     t1.n = move.to_n;
+    this.is_short = is_short;
+    if (this.is_short) {
+        t1.x = move.final_position.x
+        t1.y = move.final_position.y
+    }
+    this.update = true;
     this.pegs.removeChild(b);
 };
 Display.prototype.setAvailableMoves = function(moves) {
@@ -209,7 +225,7 @@ Display.prototype.pressup = function(evt) {
     if (this.gameStatus) {
         var t = evt.target;
         t.scaleX = t.scaleY = t.scale;
-        if (!this.moved) {
+        if (!this.moved && !this.is_short) {
             var o = evt.currentTarget;
             o.x = o.start.x;
             o.y = o.start.y;
