@@ -34,7 +34,7 @@ Game.prototype.displayPoints = function() {
     var self = this;
     if (this.score == 0) {
         this.display.displayText('Pegu!');
-       
+       this.sound.victory();
         setTimeout(function() {
             self.restart();
             self.nextLevel();
