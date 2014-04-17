@@ -37,9 +37,9 @@ Display.prototype.tutorial = function() {
 
 
 
-var bitmap = new createjs.Bitmap("images/hand.png");
+// var bitmap = new createjs.Bitmap("images/hand.png");
 
-this.board.addChild(bitmap);
+// this.board.addChild(bitmap);
 
 
 // bitmap.y = 0 - 200;
