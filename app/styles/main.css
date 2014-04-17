@@ -148,6 +148,15 @@ p.play {
 .play a {
     font-size: 60px;
 }
+
+
+.how_to_play{
+    display:none;
+}
+
+.how_to_play a {
+    font-size: 30px;
+}
 #info {
     font-weight: 100;
     position: fixed;
@@ -218,6 +227,9 @@ p.play {
     position:relative;
     z-index:10;
 }
+
+
+
 /* iphone 4 */
 @media only screen and (min-device-width: 640px) and (max-device-width: 960px) {
     #info {
