@@ -22,16 +22,69 @@ Display.prototype.tick = function(event) {
     }
 }
 Display.prototype.tutorial = function() {
+
+
+
+
+
     this.displayText('It\'s Easy!');
     var self = this;
     self.update = self.animating = true;
     var target = this.pegs.getChildAt(0);
     var target2 = this.pegs.getChildAt(1);
     var target3 = this.pegs.getChildAt(3);
+
+
+
+
+var bitmap = new createjs.Bitmap("images/hand.png");
+
+this.board.addChild(bitmap);
+
+
+bitmap.y = 0 - 200;
+bitmap.x = target.x;
+    createjs.Tween.get(bitmap)
+
+    .to({
+        x: target.x,
+        y: target.y
+    }, 500)
+
+
+    .wait(500)
+
+
+    .call(function() {
+        self.update = self.animating = true;
+    })
+
+    .to({
+        x: target3.x,
+        y: target.y
+    }, 500)
+
+    .call(function() {
+        self.displayText('Try');
+        self.emit("pressup", {
+            n: target.n,
+            to_n: self.availableMoves.right
+        });
+    })
+
+    .wait(500)
+
+    .call(function() {
+        self.animating = false;
+    });
+
+
+
+
     this.emit("mousedown", {
         n: target.n
     });
-    createjs.Tween.get(target).wait(1500).call(function() {
+    createjs.Tween.get(target).wait(1000).call(function() {
         self.update = self.animating = true;
     }).to({
         x: target3.x,
