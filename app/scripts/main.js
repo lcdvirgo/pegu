@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    var game = new Game(LocalStorage,Social);
+    var game = new Game(LocalStorage,Social,Sound);
     if (game.getGameStatus() == 1) {
         $('header').hide();
         $('.game_asset').show('500');

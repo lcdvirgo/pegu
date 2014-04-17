@@ -1,6 +1,7 @@
-function Game(Storage,Social) {
+function Game(Storage,Social,Sound) {
     this.storage = new Storage;
     this.social = new Social;
+    this.sound = new Sound;
     this.ison = false;
     this.init();
 }
@@ -12,10 +13,12 @@ Game.prototype.pressup = function(move) {
     var move = this.grid.moveTile(move.n, move.to_n);
     if (move) {
         this.display.moveTile(move);
+        this.sound.move();
         this.addPoints();
         this.saveState();
     }
 }
+
 Game.prototype.pressmove = function() {}
 Game.prototype.init = function() {
     this.levels = this.readLevels();
