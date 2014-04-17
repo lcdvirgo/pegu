@@ -42,41 +42,41 @@ var bitmap = new createjs.Bitmap("images/hand.png");
 this.board.addChild(bitmap);
 
 
-bitmap.y = 0 - 200;
-bitmap.x = target.x;
-    createjs.Tween.get(bitmap)
+// bitmap.y = 0 - 200;
+// bitmap.x = target.x;
+//     createjs.Tween.get(bitmap)
 
-    .to({
-        x: target.x,
-        y: target.y
-    }, 500)
-
-
-    .wait(500)
+//     .to({
+//         x: target.x,
+//         y: target.y
+//     }, 500)
 
 
-    .call(function() {
-        self.update = self.animating = true;
-    })
+//     .wait(500)
 
-    .to({
-        x: target3.x,
-        y: target.y
-    }, 500)
 
-    .call(function() {
-        self.displayText('Try');
-        self.emit("pressup", {
-            n: target.n,
-            to_n: self.availableMoves.right
-        });
-    })
+//     .call(function() {
+//         self.update = self.animating = true;
+//     })
 
-    .wait(500)
+//     .to({
+//         x: target3.x,
+//         y: target.y
+//     }, 500)
 
-    .call(function() {
-        self.animating = false;
-    });
+//     .call(function() {
+//         self.displayText('Try');
+//         self.emit("pressup", {
+//             n: target.n,
+//             to_n: self.availableMoves.right
+//         });
+//     })
+
+//     .wait(500)
+
+//     .call(function() {
+//         self.animating = false;
+//     });
 
 
 
