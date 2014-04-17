@@ -229,8 +229,8 @@ p.play {
        top: 70px;
   }
   #panel {
-      font-size: 50px;
-
+      font-size: 20px;
+      left:10px;
       bottom: 30px;
       text-align:left;
  }
@@ -251,8 +251,8 @@ p.play {
         top: 70px;
   }
   #panel {
-         font-size: 50px;
-
+         font-size: 20px;
+left:10px;
       bottom: 30px;
       text-align:left;
  }
