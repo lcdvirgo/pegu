@@ -7,7 +7,7 @@ Sound.prototype.victory = function() {
 }
 Sound.prototype.dispose = function() {
     this.moveSound = createjs.Sound.play("tick");
-    this.moveSound.volume = 0.1;
+    this.moveSound.volume = 0.2;
     
 }
 Sound.prototype.loss = function() {
