@@ -1,8 +1,5 @@
 # Pegu
 
-## state
-
-not ready yet!
 
 
 ## overview
