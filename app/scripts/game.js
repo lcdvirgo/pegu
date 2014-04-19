@@ -217,7 +217,10 @@ Game.prototype.displayPoints = function() {
     if (this.getNextPlayableBall()) {
         this.display.setScore(this.score + ' moves left');
     } else {
-        if (this.score == 0) {
+
+console.log(this.score);
+
+        if (this.score <= 0) {
             this.display.displayText('Pegu!');
             this.display.setScore('you won!');
         } else {
