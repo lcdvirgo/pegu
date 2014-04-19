@@ -129,7 +129,7 @@ Display.prototype.draw = function() {
     var w = window.innerWidth;
     var h = window.innerHeight;
     var m = Math.min(w, h);
-    var unit = m / (this.size + 3 || 8);
+    var unit = Math.floor(m / (this.size + 3 || 8));
     this.container.removeAllChildren();
     this.container.removeAllEventListeners();
     this.board = new createjs.Container();
@@ -141,6 +141,25 @@ Display.prototype.draw = function() {
     this.canvas.width = w;
     this.canvas.height = h;
     this.drawn_balls = 0;
+
+// if (window.devicePixelRatio) {
+//     // grab the width and height from canvas
+//     var height = this.canvas.getAttribute('height');
+//     var width = this.canvas.getAttribute('width');
+//     // reset the canvas width and height with window.devicePixelRatio applied
+//     this.canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
+//     this.canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
+//     // force the canvas back to the original size using css
+//     this.canvas.style.width = width+"px";
+//     this.canvas.style.height = height+"px";
+//     // set CreateJS to render scaled
+//     this.stage.scaleX = this.stage.scaleY = window.devicePixelRatio;
+// }
+
+
+
+
+
     for (var i = 0; i < this.grid.cells.length; i++) {
         var column = this.grid.cells[i];
         for (var c = 0; c < column.length; c++) {
@@ -159,8 +178,8 @@ Display.prototype.draw = function() {
             this.addNewBall(tile);
         };
     };
-    this.board.x = w / 2 - (this.size * unit / 2);
-    this.board.y = h / 2 - (this.size * unit / 2);
+    this.board.x = Math.floor(w / 2 - (this.size * unit / 2));
+    this.board.y = Math.floor(h / 2 - (this.size * unit / 2));
 };
 Display.prototype.render = function(grid, gameStatus) {
     this.gameStatus = gameStatus;
@@ -423,12 +442,18 @@ Display.prototype.addNewBall = function(tile) {
     var self = this;
     if (tile.isball && tile.istile) {
         var ball = new createjs.Container();
+       
+
         var size = {
             width: this.getPercent(tile.width, 10),
             height: this.getPercent(tile.height, 10)
         }
+
+
+
         var g = new createjs.Graphics().beginFill("rgba(255,255,255,1)").drawRoundRect(0, 0, size.width, size.height, 5);
         var s = new createjs.Shape(g);
+
         s.scale = 1;
         s.regX = size.width / 2;
         s.regY = size.height / 2;
@@ -444,6 +469,14 @@ Display.prototype.addNewBall = function(tile) {
         var helperContainer = new createjs.Container();
         helperContainer.name = "helper"
         ball.addChild(helperContainer);
+
+
+
+
+ s.cache(s.x-tile.height-10, s.y-tile.height+10, tile.width*2+10, tile.height*2+10);
+
+
+
         if (this.gameStatus) {
             ball.cursor = 'pointer';
         }
@@ -483,6 +516,8 @@ Display.prototype.addNewTile = function(tile) {
         var s = new createjs.Shape(g);
         square.x = tile.x;
         square.y = tile.y;
+         s.cache(s.x-tile.height-10, s.y-tile.height+10, tile.width*2+10, tile.height*2+10);
+
         square.addChild(s);
         this.tiles.addChild(square);
     }
