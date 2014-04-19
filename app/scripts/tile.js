@@ -1,11 +1,10 @@
 function Tile(state) {
-    this.x = state.x;
-    this.y = state.y;
+    this.ratio = window.devicePixelRatio ||1;
+
     this.n = state.n;
     this.isball = state.isball;
     this.istile = state.istile;
-    this.width = state.width;
-    this.height = state.height;
+
 }
 
 Tile.prototype.getState = function() {
@@ -20,10 +19,10 @@ Tile.prototype.getState = function() {
 
 
 Tile.prototype.updateState = function(state) {
-    this.x = state.x;
-    this.y = state.y;
-    this.width = state.width;
-    this.height = state.height;
+    this.x = state.x*this.ratio;
+    this.y = state.y*this.ratio;
+    this.width = state.width*this.ratio;
+    this.height = state.height*this.ratio;
 };
 
 

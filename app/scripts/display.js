@@ -92,8 +92,7 @@ Display.prototype.init = function(event) {
     canvas.height = window.innerHeight;
     canvas_holder.appendChild(canvas);
     this.canvas = canvas;
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerWidth;
+
     this.stage = new createjs.Stage(this.canvas);
     this.stage.enableMouseOver(10);
     this.stage.mouseMoveOutside = true;
@@ -125,6 +124,10 @@ Display.prototype.draw = function() {
     this.playTicker();
     this.emit("draw_board");
     this.displayText(' ');
+    this.drawn_balls = 0;
+
+    this.ratio = window.devicePixelRatio || 1;
+
     createjs.Tween.removeAllTweens();
     var w = window.innerWidth;
     var h = window.innerHeight;
@@ -138,26 +141,30 @@ Display.prototype.draw = function() {
     this.board.addChild(this.tiles);
     this.pegs = new createjs.Container();
     this.board.addChild(this.pegs);
-    this.canvas.width = w;
-    this.canvas.height = h;
-    this.drawn_balls = 0;
-
-// if (window.devicePixelRatio) {
-//     // grab the width and height from canvas
-//     var height = this.canvas.getAttribute('height');
-//     var width = this.canvas.getAttribute('width');
-//     // reset the canvas width and height with window.devicePixelRatio applied
-//     this.canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
-//     this.canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
-//     // force the canvas back to the original size using css
-//     this.canvas.style.width = width+"px";
-//     this.canvas.style.height = height+"px";
-//     // set CreateJS to render scaled
-//     this.stage.scaleX = this.stage.scaleY = window.devicePixelRatio;
-// }
 
 
+    this.canvas.width = w* this.ratio;
+    this.canvas.height = h* this.ratio;
 
+ 
+
+    this.canvas.setAttribute('width', Math.round(w * this.ratio));
+    this.canvas.setAttribute('height', Math.round( h * this.ratio));
+ 
+
+    // force the canvas back to the original size using css
+    this.canvas.style.width = w+"px";
+    this.canvas.style.height = h+"px";
+    // set CreateJS to render scaled
+
+    this.board.x = Math.floor(w*this.ratio / 2 - (this.size*this.ratio * unit / 2));
+    this.board.y = Math.floor(h*this.ratio / 2 - (this.size*this.ratio * unit / 2));
+
+    this.stage.scaleX = this.stage.scaleY = 1;
+
+
+
+//this.stage.scaleX = this.stage.scaleY = window.devicePixelRatio;
 
 
     for (var i = 0; i < this.grid.cells.length; i++) {
@@ -178,8 +185,7 @@ Display.prototype.draw = function() {
             this.addNewBall(tile);
         };
     };
-    this.board.x = Math.floor(w / 2 - (this.size * unit / 2));
-    this.board.y = Math.floor(h / 2 - (this.size * unit / 2));
+
 };
 Display.prototype.render = function(grid, gameStatus) {
     this.gameStatus = gameStatus;
@@ -442,15 +448,10 @@ Display.prototype.addNewBall = function(tile) {
     var self = this;
     if (tile.isball && tile.istile) {
         var ball = new createjs.Container();
-       
-
         var size = {
             width: this.getPercent(tile.width, 10),
             height: this.getPercent(tile.height, 10)
         }
-
-
-
         var g = new createjs.Graphics().beginFill("rgba(255,255,255,1)").drawRoundRect(0, 0, size.width, size.height, 5);
         var s = new createjs.Shape(g);
 
