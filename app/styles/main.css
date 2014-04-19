@@ -162,8 +162,8 @@ p.play {
     position: fixed;
     right: 20px;
     top: 0;
-    width: 300px;
-    font-size: 30px;
+    width: 50%;
+    font-size: 20px;
     padding: 20px 0;
     color: #53324f;
     display: none;

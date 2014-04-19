@@ -36,10 +36,13 @@ LocalStorage.prototype.setLevelID = function(levelID) {
 LocalStorage.prototype.getLevelID = function() {
     return this.storage.getItem(this.levelID);
 };
-LocalStorage.prototype.clearLevel = function() {
+LocalStorage.prototype.clearCurrentLevel = function() {
     this.storage.removeItem('pegu_level_' + this.getLevelID());
 };
-
+LocalStorage.prototype.getCurrenLevel = function() {
+    var stateJSON = this.storage.getItem('pegu_level_' + this.getLevelID());
+    return stateJSON ? JSON.parse(stateJSON) : null;
+};
 LocalStorage.prototype.getLevel = function(levelID) {
     var stateJSON = this.storage.getItem('pegu_level_' + levelID);
     return stateJSON ? JSON.parse(stateJSON) : null;

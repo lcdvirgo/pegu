@@ -92,6 +92,7 @@ Game.prototype.getNextPlayableBall = function() {
                 var n = movesArray[index];
                 if (n) {
                     var obj = {
+                        from_n: randomBall.n,
                         dir: index,
                         n: n
                     };
@@ -116,6 +117,69 @@ Game.prototype.getNextPlayableBall = function() {
         return false;
     }
 }
+Game.prototype.autoPlayMatch = function() {
+    var self = this;
+    var res = {};
+    var moves = [];
+    var move = function() {
+        var randomBall = self.getNextPlayableBall();
+        if (randomBall) {
+            var nextmove = self.grid.moveTile(randomBall.from_n, randomBall.n);
+            moves.push({
+                from_n: randomBall.from_n,
+                to_n: randomBall.n
+            });
+            move();
+        } else {
+            var availableballs = self.grid.getBalls();
+            if (availableballs.length > 1) {
+                res.win = false;
+            } else {
+                res.win = true;
+                res.moves = moves;
+            }
+        }
+    }
+    var match = move();
+    return res;
+}
+Game.prototype.resolve = function() {
+    var self = this;
+    var maxMatches = 1000;
+    var matches = 0;
+    var res = {};
+    var play = function() {
+        self.resetMatch();
+        var match = self.autoPlayMatch();
+        matches++;
+        if (match && match.win) {
+            res.win = true;
+            res.moves = match.moves;
+            return res;
+        } else {
+            if (maxMatches <= matches) {
+                res.win = false;
+                return res;
+            } else {
+                play();
+            }
+        }
+    }
+    var play = play();
+    return res;
+}
+Game.prototype.autoMove = function(move) {
+    var self = this;
+    var nextmove = self.grid.moveTile(move.from_n, move.to_n);
+    self.display.autoMoveTile(nextmove);
+};
+Game.prototype.showMatch = function() {
+    var match = this.resolve();
+    if (match.win) {
+        var firstMove = match.moves[0];
+        this.autoMove(firstMove);
+    }
+}
 Game.prototype.pressmove = function() {}
 Game.prototype.draw_board = function() {
     this.sound.dispose();
@@ -126,6 +190,7 @@ Game.prototype.init = function() {
     this.display = new Display();
     this.render();
     this.display.on("draw_board", this.draw_board.bind(this));
+    this.display.on("automoved", this.autoMove.bind(this));
 };
 Game.prototype.addPoints = function() {
     this.score--;
@@ -159,6 +224,9 @@ Game.prototype.readLevels = function() {
     });
     return res;
 };
+Game.prototype.resetMatch = function() {
+    this.grid = new Grid(null, this.levels[this.levelID]);
+}
 Game.prototype.render = function() {
     this.levelID = this.levelID < 0 ? this.levels.length - 1 : this.levelID;
     this.levelID = this.levels[this.levelID] ? this.levelID : 0;
@@ -183,15 +251,12 @@ Game.prototype.getGameStatus = function() {
     return this.storage.getGameStatus();
 }
 Game.prototype.tutorial = function() {
-var self = this;
-this.gotoLevel(0);
-this.restart();
-setTimeout(function(){
-  self.display.tutorial();
-},1500)
-  
-
-
+    var self = this;
+    this.gotoLevel(0);
+    this.restart();
+    setTimeout(function() {
+        self.display.tutorial();
+    }, 1500)
 }
 Game.prototype.start = function() {
     var self = this;
@@ -199,7 +264,7 @@ Game.prototype.start = function() {
     if (this.storage.getGameStatus() == 0) {
         setTimeout(function() {
             self.display.tutorial();
-        }, 200);
+        }, 1000);
     }
     this.storage.setGameStatus(1);
     this.render();
@@ -207,8 +272,10 @@ Game.prototype.start = function() {
     this.display.on("pressup", this.pressup.bind(this));
 };
 Game.prototype.restart = function() {
-    this.storage.clearLevel();
-    this.render();
+    if (this.storage.getCurrenLevel()) {
+        this.storage.clearCurrentLevel();
+        this.render();
+    } else {}
 };
 Game.prototype.nextLevel = function() {
     this.saveState();
