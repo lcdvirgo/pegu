@@ -92,7 +92,6 @@ Display.prototype.init = function(event) {
     canvas.height = window.innerHeight;
     canvas_holder.appendChild(canvas);
     this.canvas = canvas;
-
     this.stage = new createjs.Stage(this.canvas);
     this.stage.enableMouseOver(10);
     this.stage.mouseMoveOutside = true;
@@ -125,9 +124,7 @@ Display.prototype.draw = function() {
     this.emit("draw_board");
     this.displayText(' ');
     this.drawn_balls = 0;
-
     this.ratio = window.devicePixelRatio || 1;
-
     createjs.Tween.removeAllTweens();
     var w = window.innerWidth;
     var h = window.innerHeight;
@@ -141,32 +138,17 @@ Display.prototype.draw = function() {
     this.board.addChild(this.tiles);
     this.pegs = new createjs.Container();
     this.board.addChild(this.pegs);
-
-
-    this.canvas.width = w* this.ratio;
-    this.canvas.height = h* this.ratio;
-
- 
-
+    this.canvas.width = w * this.ratio;
+    this.canvas.height = h * this.ratio;
     this.canvas.setAttribute('width', Math.round(w * this.ratio));
-    this.canvas.setAttribute('height', Math.round( h * this.ratio));
- 
-
+    this.canvas.setAttribute('height', Math.round(h * this.ratio));
     // force the canvas back to the original size using css
-    this.canvas.style.width = w+"px";
-    this.canvas.style.height = h+"px";
+    this.canvas.style.width = w + "px";
+    this.canvas.style.height = h + "px";
     // set CreateJS to render scaled
-
-    this.board.x = Math.floor(w*this.ratio / 2 - (this.size*this.ratio * unit / 2));
-    this.board.y = Math.floor(h*this.ratio / 2 - (this.size*this.ratio * unit / 2));
-
+    this.board.x = Math.floor(w * this.ratio / 2 - (this.size * this.ratio * unit / 2));
+    this.board.y = Math.floor(h * this.ratio / 2 - (this.size * this.ratio * unit / 2));
     this.stage.scaleX = this.stage.scaleY = 1;
-
-
-
-//this.stage.scaleX = this.stage.scaleY = window.devicePixelRatio;
-
-
     for (var i = 0; i < this.grid.cells.length; i++) {
         var column = this.grid.cells[i];
         for (var c = 0; c < column.length; c++) {
@@ -176,16 +158,11 @@ Display.prototype.draw = function() {
             cell.y = c * unit;
             cell.width = unit;
             cell.height = unit;
-            // this.islast = false;
-            // if(c == column.length - 1 && i == this.grid.cells.length - 1){
-            //     this.islast = true;
-            // }
             tile.updateState(cell);
             this.addNewTile(tile);
             this.addNewBall(tile);
         };
     };
-
 };
 Display.prototype.render = function(grid, gameStatus) {
     this.gameStatus = gameStatus;
@@ -207,8 +184,6 @@ Display.prototype.emit = function(event, data) {
         });
     }
 };
-
-
 Display.prototype.moveTile = function(move, is_short) {
     this.playTicker();
     var self = this;
@@ -296,12 +271,9 @@ Display.prototype.mousedown = function(evt) {
 }
 Display.prototype.pressmove = function(evt) {
     if (this.gameStatus) {
-       
-
-
         var o = evt.currentTarget;
         if (this.availableMoves && !this.moved && !this.is_short) {
-             this.playTicker();
+            this.playTicker();
             var move = false;
             var dx = Math.abs(o.x - o.start.x);
             var dy = Math.abs(o.y - o.start.y);
@@ -454,7 +426,6 @@ Display.prototype.addNewBall = function(tile) {
         }
         var g = new createjs.Graphics().beginFill("rgba(255,255,255,1)").drawRoundRect(0, 0, size.width, size.height, 5);
         var s = new createjs.Shape(g);
-
         s.scale = 1;
         s.regX = size.width / 2;
         s.regY = size.height / 2;
@@ -470,14 +441,7 @@ Display.prototype.addNewBall = function(tile) {
         var helperContainer = new createjs.Container();
         helperContainer.name = "helper"
         ball.addChild(helperContainer);
-
-
-
-
- s.cache(s.x-tile.height-10, s.y-tile.height+10, tile.width*2+10, tile.height*2+10);
-
-
-
+        s.cache(s.x - tile.height - 10, s.y - tile.height + 10, tile.width * 2 + 10, tile.height * 2 + 10);
         if (this.gameStatus) {
             ball.cursor = 'pointer';
         }
@@ -517,8 +481,7 @@ Display.prototype.addNewTile = function(tile) {
         var s = new createjs.Shape(g);
         square.x = tile.x;
         square.y = tile.y;
-         s.cache(s.x-tile.height-10, s.y-tile.height+10, tile.width*2+10, tile.height*2+10);
-
+        s.cache(s.x - tile.height - 10, s.y - tile.height + 10, tile.width * 2 + 10, tile.height * 2 + 10);
         square.addChild(s);
         this.tiles.addChild(square);
     }

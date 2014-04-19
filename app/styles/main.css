@@ -232,6 +232,9 @@ p.play {
 
 /* iphone 4 */
 @media only screen and (min-width: 480px) and (max-width: 960px) {
+    p{
+        width: 100%;
+    }
     #info {
         font-size: 25px;
         padding: 10px 0;
@@ -254,6 +257,9 @@ p.play {
 }
 /* iphone 5 */
 @media screen and (device-aspect-ratio: 40/71) {
+        p{
+        width: 100%;
+    }
     #info {
         font-size: 25px;
         padding: 10px 0;

@@ -6,25 +6,19 @@ function Game(Storage, Social, Sound) {
     this.ison = false;
     this.init();
 }
-
 Game.prototype.init = function() {
     var self = this;
     this.levels = this.readLevels();
     //this.levelID = this.storage.getLevelID() || this.levels.length - 1;
     this.display = new Display();
-   // this.render();
+    // this.render();
     this.display.on("draw_board", this.draw_board.bind(this));
     this.display.on("automoved", this.autoMove.bind(this));
     this.display.on("rollover", this.setMoves.bind(this));
-
-setTimeout(function(){
-
-     self.start();
-},100);
-
-
+    setTimeout(function() {
+        self.start();
+    }, 100);
 };
-
 Game.prototype.setMoves = function(o) {
     var movesArray = this.grid.movesArray(o.n);
     var availableMoves = [];
@@ -207,7 +201,6 @@ Game.prototype.pressmove = function() {}
 Game.prototype.draw_board = function() {
     this.sound.dispose();
 }
-
 Game.prototype.addPoints = function() {
     this.score--;
     this.displayPoints();
@@ -217,9 +210,7 @@ Game.prototype.displayPoints = function() {
     if (this.getNextPlayableBall()) {
         this.display.setScore(this.score + ' moves left');
     } else {
-
-console.log(this.score);
-
+        console.log(this.score);
         if (this.score <= 0) {
             this.display.displayText('Pegu!');
             this.display.setScore('you won!');
@@ -239,11 +230,6 @@ Game.prototype.readLevels = function() {
         url: 'levels/levels.json',
         success: function(result) {
             res = result;
-
-
-
-
-
         },
         async: false
     });
@@ -275,52 +261,30 @@ Game.prototype.render = function() {
 Game.prototype.getGameStatus = function() {
     return this.storage.getGameStatus();
 }
-
 Game.prototype.setGameStatus = function(status) {
     this.storage.setGameStatus(status);
 }
-
 Game.prototype.play = function() {
-
-this.setGameStatus(1);
-if(this.storage.getLevelID()!=this.levelID){
-this.start();
-
+    this.setGameStatus(1);
+    if (this.storage.getLevelID() != this.levelID) {
+        this.start();
+    }
 }
-
-}
-
 Game.prototype.start = function() {
     var self = this;
-
-
-
- if (self.getGameStatus() == 1) {
-
-
-    this.levelID = this.storage.getLevelID() || 0;
-
-
- }else{
-
-    this.levelID = this.storage.getLevelID() || this.levels.length - 1;
-
-
- }
-
-
-
-
+    if (self.getGameStatus() == 1) {
+        this.levelID = this.storage.getLevelID() || 0;
+    } else {
+        this.levelID = this.storage.getLevelID() || this.levels.length - 1;
+    }
     this.render();
     this.display.on("mousedown", this.mousedown.bind(this));
     this.display.on("pressup", this.pressup.bind(this));
 };
 Game.prototype.restart = function() {
-    if(this.restartTimeout){
+    if (this.restartTimeout) {
         clearTimeout(this.restartTimeout);
-    
     }
-
     if (this.storage.getCurrenLevel()) {
         this.storage.clearCurrentLevel();
         this.render();

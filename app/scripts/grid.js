@@ -9,9 +9,6 @@ Grid.prototype.build = function() {
     var n = 1;
     var scheme = this.storage ? this.storage.grid : this.level;
     this.balls = scheme.currentScheme.length - scheme.emptySpots.length;
-
-
-
     for (var x = 0; x < this.size; x++) {
         var row = cells[x] = [];
         for (var y = 0; y < this.size; y++) {
@@ -52,23 +49,15 @@ Grid.prototype.serialize = function() {
     //     cells: cellState
     // };
 };
-
-
 Grid.prototype.getBalls = function() {
-
-
     var res = [];
     this.eachCell(function(x, y, tile) {
-       if(tile.isball){
+        if (tile.isball) {
             res.push(tile);
-       }
-       
+        }
     });
     return res;
-
 };
-
-
 Grid.prototype.movesArray = function(n) {
     var availableMoves = {
         up: false,
@@ -105,8 +94,6 @@ Grid.prototype.getTile = function(n) {
     var res;
     this.eachCell(function(x, y, tile) {
         if (tile.n == n) {
-
-
             res = tile;
         }
     });
@@ -118,8 +105,6 @@ Grid.prototype.moveTile = function(n, to_n) {
     var eaten;
     tiles.from_n = this.getTile(n);
     tiles.to_n = this.getTile(to_n);
-
-
     tiles.to_n.addBall();
     tiles.from_n.removeBall();
     if (to_n - this.size * 2 == n) {
@@ -151,9 +136,8 @@ Grid.prototype.moveTile = function(n, to_n) {
         from_n: tiles.from_n.n,
         eaten: tiles.eaten.n,
         final_position: {
-            x:tiles.to_n.x,
-            y:tiles.to_n.y
-
+            x: tiles.to_n.x,
+            y: tiles.to_n.y
         }
     }
     return res;
