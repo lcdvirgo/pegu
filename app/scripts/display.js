@@ -14,14 +14,23 @@ function Display() {
 Display.prototype.tick = function(event) {
     if (!event.paused || this.update) {
         this.stage.update(event);
+        //console.log('update');
         this.update = false;
     }
+}
+Display.prototype.pauseTicker = function(time) {
+    setTimeout(function() {
+        createjs.Ticker.setPaused(true);
+    }, time || 100);
+}
+Display.prototype.playTicker = function(time) {
+    createjs.Ticker.setPaused(false);
 }
 Display.prototype.updateStage = function() {
     this.update = true;
 }
 Display.prototype.tutorial = function() {
-    createjs.Ticker.setPaused(false);
+    this.playTicker();
     var self = this;
     this.displayText('It\'s Easy!');
     var target = this.pegs.getChildAt(0);
@@ -43,7 +52,7 @@ Display.prototype.tutorial = function() {
         y: target4.y + 20,
         alpha: 0
     }, 200).wait(1000).call(function() {
-        createjs.Ticker.setPaused(true);
+        self.pauseTicker();
     });
     createjs.Tween.get(target).wait(1000).call(function() {
         self.emit("mousedown", {
@@ -53,7 +62,6 @@ Display.prototype.tutorial = function() {
         x: target3.x,
         y: target.y
     }, 200).call(function() {
-        
         self.emit("pressup", {
             n: target.n,
             to_n: self.availableMoves.right
@@ -98,7 +106,7 @@ Display.prototype.init = function(event) {
     createjs.Ticker.addEventListener("tick", function(event) {
         self.tick(event);
     });
-    createjs.Ticker.setPaused(true);
+    this.pauseTicker();
     window.alphaThresh = 0.75;
     //this.resizeTO;
     $(window).resize(function() {
@@ -114,7 +122,7 @@ Display.prototype.eachChildren = function(container, callback) {
     }
 };
 Display.prototype.draw = function() {
-    createjs.Ticker.setPaused(false);
+    this.playTicker();
     this.emit("draw_board");
     this.displayText(' ');
     createjs.Tween.removeAllTweens();
@@ -146,7 +154,6 @@ Display.prototype.draw = function() {
             // if(c == column.length - 1 && i == this.grid.cells.length - 1){
             //     this.islast = true;
             // }
-
             tile.updateState(cell);
             this.addNewTile(tile);
             this.addNewBall(tile);
@@ -175,46 +182,45 @@ Display.prototype.emit = function(event, data) {
         });
     }
 };
+
+
 Display.prototype.moveTile = function(move, is_short) {
+    this.playTicker();
+    var self = this;
     var b = this.balls[move.eaten];
     var t1 = this.balls[move.from_n];
     this.balls[move.to_n] = t1;
     t1.n = move.to_n;
     this.is_short = is_short;
     if (this.is_short) {
-        t1.x = move.final_position.x
-        t1.y = move.final_position.y
+        createjs.Tween.get(t1).to({
+            x: move.final_position.x,
+            y: move.final_position.y
+        }, 100, createjs.Ease.linear).call(function() {
+            self.pauseTicker(200);
+            t1.start.x = move.final_position.x;
+            t1.start.y = move.final_position.y;
+            this.moved = true;
+        });
     }
     this.pegs.removeChild(b);
 };
 Display.prototype.autoMoveTile = function(move) {
     var self = this;
-
-
-var target = this.grid.getTile(move.from_n);
-var to = this.grid.getTile(move.to_n);
-
-  var s = this.balls[move.from_n];
-
-
-
-   // createjs.Ticker.setPaused(false);
-
-//self.updateStage();
-
+    var target = this.grid.getTile(move.from_n);
+    var to = this.grid.getTile(move.to_n);
+    var s = this.balls[move.from_n];
     createjs.Tween.get(s).to({
         x: to.x,
         y: to.y
     }, 200).wait(1000).call(function() {
-        console.log('moved');
         self.emit("automoved", {
             from_n: move.from_n,
             to_n: move.to_n,
             x: move.final_position.x,
             y: move.final_position.y
         });
-        //createjs.Ticker.setPaused(true);
-       // self.updateStage();
+        // self.updateStage();
     });
 }
 Display.prototype.setAvailableMoves = function(moves) {
@@ -222,22 +228,27 @@ Display.prototype.setAvailableMoves = function(moves) {
 };
 Display.prototype.pressup = function(evt) {
     if (this.gameStatus) {
+        var o = evt.currentTarget;
         var t = evt.target;
         t.scaleX = t.scaleY = t.scale;
-        if (!this.moved && !this.is_short) {
-            var o = evt.currentTarget;
+        if (!this.moved) {
             o.x = o.start.x;
             o.y = o.start.y;
+            this.pauseTicker(200);
         } else {
+            var helperContainer = o.getChildByName('helper');
+            if (helperContainer) {
+                helperContainer.removeAllChildren();
+            }
+            this.pauseTicker(200);
             this.moved = false;
         }
     }
     this.updateStage();
-    createjs.Ticker.setPaused(true);
 }
 Display.prototype.mousedown = function(evt) {
-    createjs.Ticker.setPaused(false);
     if (this.gameStatus) {
+        this.is_short = false;
         var t = evt.target;
         t.scaleX = t.scaleY = t.scale * 1.04;
         var o = evt.currentTarget;
@@ -253,14 +264,19 @@ Display.prototype.mousedown = function(evt) {
         this.emit("mousedown", {
             x: o.x,
             y: o.y,
-            n: o.n
+            n: o.n,
+            touch: createjs.Touch.isSupported()
         });
     }
 }
 Display.prototype.pressmove = function(evt) {
     if (this.gameStatus) {
+       
+
+
         var o = evt.currentTarget;
-        if (this.availableMoves && !this.moved) {
+        if (this.availableMoves && !this.moved && !this.is_short) {
+             this.playTicker();
             var move = false;
             var dx = Math.abs(o.x - o.start.x);
             var dy = Math.abs(o.y - o.start.y);
@@ -304,6 +320,7 @@ Display.prototype.pressmove = function(evt) {
             } else {
                 o.y = evt.stageY + o.offset.y;
                 o.x = evt.stageX + o.offset.x;
+                this.pauseTicker(20);
             }
             if (move) {
                 this.emit("pressup", {
@@ -312,17 +329,71 @@ Display.prototype.pressmove = function(evt) {
                 });
                 o.x = tile.x;
                 o.y = tile.y;
-
                 this.moved = true;
+                this.pauseTicker(20);
             }
-        }
+        } else {}
     }
 }
+Display.prototype.getHoverHelper = function(n, dir) {
+    var tile = this.grid.getTile(n);
+    var arrow = new createjs.Shape();
+    arrow.mouseEnabled = false;
+    var size = {
+        width: this.getPercent(tile.width, 10),
+        height: this.getPercent(tile.height, 10)
+    }
+    arrow.regX = size.width / 2;
+    arrow.regY = size.height / 2;
+    arrow.x = tile.width / 2;
+    arrow.y = tile.height / 2;
+    arrow.alpha = 1;
+    arrow.name = 'arrow_' + dir;
+    arrow.graphics.beginFill("rgba(240,142,118,0.4)");
+    if (dir == 'up') {
+        arrow.graphics.drawRoundRect(0, 0, size.width, size.height / 4, 5);
+    } else if (dir == 'down') {
+        arrow.graphics.drawRoundRect(0, size.height - size.height / 4, size.width, size.height / 4, 5);
+    } else if (dir == 'left') {
+        arrow.graphics.drawRoundRect(0, 0, size.width / 4, size.height, 5);
+    } else if (dir == 'right') {
+        arrow.graphics.drawRoundRect(size.width - size.width / 4, 0, size.width / 4, size.height, 5);
+    }
+    return arrow;
+};
 Display.prototype.rollover = function(evt) {
-    evt.target.scaleX = evt.target.scaleY = evt.target.scale;
+    var o = evt.currentTarget;
+    this.emit("rollover", {
+        n: o.parent.n
+    });
+    var helperContainer = o.parent.getChildByName('helper');
+    if (this.availableMoves.down) {
+        var arrow = this.getHoverHelper(this.availableMoves.down, 'down');
+        helperContainer.addChild(arrow);
+    }
+    if (this.availableMoves.up) {
+        var arrow = this.getHoverHelper(this.availableMoves.up, 'up');
+        helperContainer.addChild(arrow);
+    }
+    if (this.availableMoves.right) {
+        var arrow = this.getHoverHelper(this.availableMoves.right, 'right');
+        helperContainer.addChild(arrow);
+    }
+    if (this.availableMoves.left) {
+        var arrow = this.getHoverHelper(this.availableMoves.left, 'left');
+        helperContainer.addChild(arrow);
+    }
+    // createjs.Tween.get(arrow).wait(100).to({
+    //     alpha: 1
+    // }, 100, createjs.Ease.linear).call(function(){
+    // });
+    this.updateStage();
 };
 Display.prototype.rollout = function(evt) {
-    evt.target.scaleX = evt.target.scaleY = evt.target.scale;
+    var o = evt.currentTarget;
+    var helperContainer = o.parent.getChildByName('helper');
+    helperContainer.removeAllChildren();
+    this.updateStage();
 };
 Display.prototype.displayLevelName = function(text) {
     var sp1 = document.createElement("span");
@@ -345,16 +416,19 @@ Display.prototype.setScore = function(score) {
     var sp2 = document.getElementById("score");
     this.scoreBoard.replaceChild(sp1, sp2);
 };
+Display.prototype.getPercent = function(n, p) {
+    return n - n * p / 100;
+}
 Display.prototype.addNewBall = function(tile) {
     var self = this;
     if (tile.isball && tile.istile) {
+        var ball = new createjs.Container();
         var size = {
-            width: tile.width - (tile.width * 10 / 100),
-            height: tile.height - (tile.height * 10 / 100)
+            width: this.getPercent(tile.width, 10),
+            height: this.getPercent(tile.height, 10)
         }
         var g = new createjs.Graphics().beginFill("rgba(255,255,255,1)").drawRoundRect(0, 0, size.width, size.height, 5);
         var s = new createjs.Shape(g);
-        var ball = new createjs.Container();
         s.scale = 1;
         s.regX = size.width / 2;
         s.regY = size.height / 2;
@@ -362,14 +436,17 @@ Display.prototype.addNewBall = function(tile) {
         s.y = tile.height / 2;
         s.scaleX = 0;
         s.scaleY = 0;
+        ball.addChild(s);
         ball.name = 'ball_' + tile.n;
         ball.x = tile.x;
         ball.y = tile.y;
         ball.n = tile.n;
+        var helperContainer = new createjs.Container();
+        helperContainer.name = "helper"
+        ball.addChild(helperContainer);
         if (this.gameStatus) {
             ball.cursor = 'pointer';
         }
-        ball.addChild(s);
         this.balls[tile.n] = ball;
         this.pegs.addChild(ball);
         ball.addEventListener("pressup", function(evt) {
@@ -393,7 +470,7 @@ Display.prototype.addNewBall = function(tile) {
         }, 300, createjs.Ease.bounceOut).call(function() {
             self.drawn_balls++
             if (self.grid.balls == self.drawn_balls) {
-                createjs.Ticker.setPaused(true);
+                self.pauseTicker();
             }
         });
     }

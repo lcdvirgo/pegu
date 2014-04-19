@@ -6,8 +6,26 @@ function Game(Storage, Social, Sound) {
     this.ison = false;
     this.init();
 }
-Game.prototype.mousedown = function(o) {
+
+Game.prototype.init = function() {
     var self = this;
+    this.levels = this.readLevels();
+    //this.levelID = this.storage.getLevelID() || this.levels.length - 1;
+    this.display = new Display();
+   // this.render();
+    this.display.on("draw_board", this.draw_board.bind(this));
+    this.display.on("automoved", this.autoMove.bind(this));
+    this.display.on("rollover", this.setMoves.bind(this));
+
+setTimeout(function(){
+
+     self.start();
+},100);
+
+
+};
+
+Game.prototype.setMoves = function(o) {
     var movesArray = this.grid.movesArray(o.n);
     var availableMoves = [];
     for (var index in movesArray) {
@@ -21,33 +39,38 @@ Game.prototype.mousedown = function(o) {
         }
     }
     this.display.setAvailableMoves(movesArray);
-    // if (availableMoves.length == 1) {
-    //     this.shortcurmove = true;
-    //     var move = this.grid.moveTile(o.n, availableMoves[0].n);
-    //     if (move) {
-    //         this.display.moveTile(move, this.shortcurmove);
-    //         this.sound.move();
-    //         this.addPoints();
-    //         this.saveState();
-    //         if (this.getNextPlayableBall()) {} else {
-    //             var balls = this.grid.getBalls();
-    //             if (balls.length > 1) {
-    //                 this.sound.loss();
-    //                 setTimeout(function() {
-    //                     self.restart();
-    //                 }, 3000);
-    //             } else {
-    //                 this.sound.victory();
-    //                 setTimeout(function() {
-    //                     self.restart();
-    //                     self.nextLevel();
-    //                 }, 1000);
-    //             }
-    //         }
-    //     }
-    // } else {
-    //     this.shortcurmove = false;
-    // }
+    return availableMoves;
+};
+Game.prototype.mousedown = function(o) {
+    var self = this;
+    var availableMoves = this.setMoves(o);
+    if (availableMoves.length == 1 && !o.touch) {
+        this.shortcurmove = true;
+        var move = this.grid.moveTile(o.n, availableMoves[0].n);
+        if (move) {
+            this.display.moveTile(move, this.shortcurmove);
+            this.sound.move();
+            this.addPoints();
+            this.saveState();
+            if (this.getNextPlayableBall()) {} else {
+                var balls = this.grid.getBalls();
+                if (balls.length > 1) {
+                    this.sound.loss();
+                    this.restartTimeout = setTimeout(function() {
+                        self.restart();
+                    }, 3000);
+                } else {
+                    this.sound.victory();
+                    this.restartTimeout = setTimeout(function() {
+                        self.restart();
+                        self.nextLevel();
+                    }, 1000);
+                }
+            }
+        }
+    } else {
+        this.shortcurmove = false;
+    }
 }
 Game.prototype.pressup = function(move) {
     var self = this,
@@ -184,14 +207,7 @@ Game.prototype.pressmove = function() {}
 Game.prototype.draw_board = function() {
     this.sound.dispose();
 }
-Game.prototype.init = function() {
-    this.levels = this.readLevels();
-    this.levelID = this.storage.getLevelID() || this.levels.length - 1;
-    this.display = new Display();
-    this.render();
-    this.display.on("draw_board", this.draw_board.bind(this));
-    this.display.on("automoved", this.autoMove.bind(this));
-};
+
 Game.prototype.addPoints = function() {
     this.score--;
     this.displayPoints();
@@ -215,10 +231,16 @@ Game.prototype.displayLevelName = function(level_name) {
 };
 Game.prototype.readLevels = function() {
     var res;
+    var self = this;
     $.ajax({
         url: 'levels/levels.json',
         success: function(result) {
             res = result;
+
+
+
+
+
         },
         async: false
     });
@@ -250,28 +272,52 @@ Game.prototype.render = function() {
 Game.prototype.getGameStatus = function() {
     return this.storage.getGameStatus();
 }
-Game.prototype.tutorial = function() {
-    var self = this;
-    this.gotoLevel(0);
-    this.restart();
-    setTimeout(function() {
-        self.display.tutorial();
-    }, 1500)
+
+Game.prototype.setGameStatus = function(status) {
+    this.storage.setGameStatus(status);
 }
+
+Game.prototype.play = function() {
+
+this.setGameStatus(1);
+if(this.storage.getLevelID()!=this.levelID){
+this.start();
+
+}
+
+}
+
 Game.prototype.start = function() {
     var self = this;
+
+
+
+ if (self.getGameStatus() == 1) {
+
+
     this.levelID = this.storage.getLevelID() || 0;
-    if (this.storage.getGameStatus() == 0) {
-        setTimeout(function() {
-            self.display.tutorial();
-        }, 1000);
-    }
-    this.storage.setGameStatus(1);
+
+
+ }else{
+
+    this.levelID = this.storage.getLevelID() || this.levels.length - 1;
+
+
+ }
+
+
+
+
     this.render();
     this.display.on("mousedown", this.mousedown.bind(this));
     this.display.on("pressup", this.pressup.bind(this));
 };
 Game.prototype.restart = function() {
+    if(this.restartTimeout){
+        clearTimeout(this.restartTimeout);
+    
+    }
+
     if (this.storage.getCurrenLevel()) {
         this.storage.clearCurrentLevel();
         this.render();

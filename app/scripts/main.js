@@ -1,39 +1,24 @@
 jQuery(document).ready(function($) {
-    var game = new Game(LocalStorage, Social, Sound);
-    if (game.getGameStatus() == 1) {
-        $('header').hide('500', function() {
-            game.start();
-        });
-        $('.game_asset').show('500');
-    } else {
-        $('header').show('500');
-        $('.game_asset').hide('500');
-    }
+    game = new Game(LocalStorage, Social, Sound);
     $('.play a').on('click', function(event) {
         event.preventDefault();
         $('.how_to_play').hide('200');
         $('header').hide('500', function() {
-            if (game.getGameStatus() == 1) {} else {
-                game.start();
-            }
+            game.play();
         });
         $('.game_asset').show('500');
     });
-    $('.how_to_play a').on('click', function(event) {
-        event.preventDefault();
-        $('.how_to_play').hide('200');
-        $('header').hide('500', function() {
-            game.tutorial();
-        });
-        $('.game_asset').show('500');
-    });
-
-
+    // $('.how_to_play a').on('click', function(event) {
+    //     event.preventDefault();
+    //     $('.how_to_play').hide('200');
+    //     $('header').hide('500', function() {
+    //         game.tutorial();
+    //     });
+    //     $('.game_asset').show('500');
+    // });
     $('#infobtn').on('click', function(event) {
         event.preventDefault();
-
         $('.how_to_play').show('200');
-
         $('header').show('500');
         $('.game_asset').hide('500');
     });
