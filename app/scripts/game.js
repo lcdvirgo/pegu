@@ -1,9 +1,9 @@
-function Game(Storage, Social, Sound) {
-    this.storage = new Storage;
-    this.social = new Social;
-    this.shortcurmove = false
-    this.sound = new Sound;
+function Game() {
+    this.storage = new LocalStorage();
+    this.social = new Social();
+    this.sound = new Sound();
     this.ison = false;
+    this.shortcurmove = false;
     this.init();
 }
 Game.prototype.init = function() {
@@ -15,6 +15,8 @@ Game.prototype.init = function() {
     this.display.on("draw_board", this.draw_board.bind(this));
     this.display.on("automoved", this.autoMove.bind(this));
     this.display.on("rollover", this.setMoves.bind(this));
+    this.display.on("mousedown", this.mousedown.bind(this));
+    this.display.on("pressup", this.pressup.bind(this));
     setTimeout(function() {
         self.start();
     }, 100);
@@ -38,11 +40,22 @@ Game.prototype.setMoves = function(o) {
 Game.prototype.mousedown = function(o) {
     var self = this;
     var availableMoves = this.setMoves(o);
-    if (availableMoves.length == 1 && !o.touch) {
-        this.shortcurmove = true;
-        var move = this.grid.moveTile(o.n, availableMoves[0].n);
+    //console.log(o.chose);
+    //console.log(availableMoves);
+    var canmove = false;
+    if (o.chose) {
+        for (var i = 0; i < availableMoves.length; i++) {
+            if (availableMoves[i].dir == o.chose) {
+                canmove = availableMoves[i];
+            }
+        };
+    } else if (availableMoves.length == 1) {
+        canmove = availableMoves[0];
+    }
+    if (canmove) {
+        var move = this.grid.moveTile(o.n, canmove.n);
         if (move) {
-            this.display.moveTile(move, this.shortcurmove);
+            this.display.moveTile(move);
             this.sound.move();
             this.addPoints();
             this.saveState();
@@ -197,7 +210,7 @@ Game.prototype.showMatch = function() {
         this.autoMove(firstMove);
     }
 }
-Game.prototype.pressmove = function() {}
+
 Game.prototype.draw_board = function() {
     this.sound.dispose();
 }
@@ -242,7 +255,6 @@ Game.prototype.render = function() {
     this.levelID = this.levelID < 0 ? this.levels.length - 1 : this.levelID;
     this.levelID = this.levels[this.levelID] ? this.levelID : 0;
     this.level_name = this.levels[this.levelID].name;
-    var defaultScore = this.levels[this.levelID].currentScheme.length - this.levels[this.levelID].emptySpots.length - 1;
     if (this.getGameStatus()) {
         this.storage.setLevelID(this.levelID);
     }
@@ -252,10 +264,11 @@ Game.prototype.render = function() {
     } else {
         this.level = stored_level;
     }
-    this.score = this.level ? this.level.score : defaultScore;
     this.grid = new Grid(this.level, this.levels[this.levelID]);
     this.display.render(this.grid, this.getGameStatus());
     this.displayLevelName(this.level_name);
+    var defaultScore = this.grid.getBalls().length - 1;
+    this.score = this.level ? this.level.score : defaultScore;
     this.displayPoints();
 };
 Game.prototype.getGameStatus = function() {
@@ -278,8 +291,6 @@ Game.prototype.start = function() {
         this.levelID = this.storage.getLevelID() || this.levels.length - 1;
     }
     this.render();
-    this.display.on("mousedown", this.mousedown.bind(this));
-    this.display.on("pressup", this.pressup.bind(this));
 };
 Game.prototype.restart = function() {
     if (this.restartTimeout) {

@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    var game = new Game(LocalStorage, Social, Sound);
+    var game = new Game();
     $('.play a').on('click', function(event) {
         event.preventDefault();
         $('.how_to_play').hide('200');
