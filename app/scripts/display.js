@@ -194,6 +194,13 @@ Display.prototype.setScore = function(score) {
     var sp2 = document.getElementById("score");
     this.scoreBoard.replaceChild(sp1, sp2);
 };
+Display.prototype.helperRollout = function(evt) {
+    this.chose = false;
+    if (!this.onechoice) {
+        evt.currentTarget.alpha = 0.5;
+    }
+    this.updateStage();
+}
 Display.prototype.addNewBall = function(tile) {
     var self = this;
     if (tile.isball && tile.istile) {
@@ -229,9 +236,7 @@ Display.prototype.addNewBall = function(tile) {
             self.updateStage();
         });
         arrow_down.addEventListener("rollout", function(evt) {
-            self.chose = false;
-            evt.currentTarget.alpha = 0.5;
-            self.updateStage();
+            self.helperRollout(evt)
         });
         if (this.isTouch) {
             arrow_down.addEventListener("mousedown", function(evt) {
@@ -250,9 +255,7 @@ Display.prototype.addNewBall = function(tile) {
             self.updateStage();
         });
         arrow_up.addEventListener("rollout", function(evt) {
-            self.chose = false;
-            evt.currentTarget.alpha = 0.5;
-            self.updateStage();
+            self.helperRollout(evt)
         });
         if (this.isTouch) {
             arrow_up.addEventListener("mousedown", function(evt) {
@@ -271,9 +274,7 @@ Display.prototype.addNewBall = function(tile) {
             self.updateStage();
         });
         arrow_right.addEventListener("rollout", function(evt) {
-            self.chose = false;
-            evt.currentTarget.alpha = 0.5;
-            self.updateStage();
+            self.helperRollout(evt)
         });
         if (this.isTouch) {
             arrow_right.addEventListener("mousedown", function(evt) {
@@ -292,7 +293,7 @@ Display.prototype.addNewBall = function(tile) {
             self.updateStage();
         });
         arrow_left.addEventListener("rollout", function(evt) {
-            self.chose = false;
+            self.helperRollout(evt)
         });
         if (this.isTouch) {
             arrow_left.addEventListener("mousedown", function(evt) {
@@ -353,41 +354,41 @@ Display.prototype.mousedown = function(o) {
     }
 };
 Display.prototype.rollover = function(o) {
-    o.parent.addChild(o);
-    this.chose = false;
-    this.emit("rollover", {
-        n: o.n
-    });
-    var helperContainer = o.getChildByName('helper');
-    var c = [];
-    if (this.availableMoves.down) {
-        helperContainer.getChildByName('arrow_down').alpha = 0.5;
-        c.push('arrow_down');
+    if (this.gameStatus == 1) {
+        o.parent.addChild(o);
+        this.chose = false;
+        this.onechoice = false;
+        this.emit("rollover", {
+            n: o.n
+        });
+        var helperContainer = o.getChildByName('helper');
+        var c = [];
+        if (this.availableMoves.down) {
+            helperContainer.getChildByName('arrow_down').alpha = 0.5;
+            c.push('arrow_down');
+        }
+        if (this.availableMoves.up) {
+            helperContainer.getChildByName('arrow_up').alpha = 0.5;
+            c.push('arrow_up');
+        }
+        if (this.availableMoves.right) {
+            helperContainer.getChildByName('arrow_right').alpha = 0.5;
+            c.push('arrow_right');
+        }
+        if (this.availableMoves.left) {
+            helperContainer.getChildByName('arrow_left').alpha = 0.5;
+            c.push('arrow_left');
+        }
+        if (c.length == 1) {
+            var t = o.children[0];
+            this.onechoice = true;
+            helperContainer.getChildByName(c[0]).alpha = 1;
+        } else if (c.length >= 2) {
+            var t = o.children[0];
+            t.scaleX = t.scaleY = t.scale * 1.2;
+        }
+        this.updateStage();
     }
-    if (this.availableMoves.up) {
-        helperContainer.getChildByName('arrow_up').alpha = 0.5;
-        c.push('arrow_up');
-    }
-    if (this.availableMoves.right) {
-        helperContainer.getChildByName('arrow_right').alpha = 0.5;
-        c.push('arrow_right');
-    }
-    if (this.availableMoves.left) {
-        helperContainer.getChildByName('arrow_left').alpha = 0.5;
-        c.push('arrow_left');
-    }
-
-    if (c.length == 1) {
-        var t = o.children[0];
-       
-helperContainer.getChildByName(c[0]).alpha = 1;
-
-
-    }else if (c.length >= 2) {
-        var t = o.children[0];
-        t.scaleX = t.scaleY = t.scale * 1.2;
-    }
-    this.updateStage();
 };
 Display.prototype.rollout = function(o) {
     var t = o.children[0];

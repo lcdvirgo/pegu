@@ -40,8 +40,6 @@ Game.prototype.setMoves = function(o) {
 Game.prototype.mousedown = function(o) {
     var self = this;
     var availableMoves = this.setMoves(o);
-    //console.log(o.chose);
-    //console.log(availableMoves);
     var canmove = false;
     if (o.chose) {
         for (var i = 0; i < availableMoves.length; i++) {
@@ -210,7 +208,6 @@ Game.prototype.showMatch = function() {
         this.autoMove(firstMove);
     }
 }
-
 Game.prototype.draw_board = function() {
     this.sound.dispose();
 }
@@ -223,7 +220,6 @@ Game.prototype.displayPoints = function() {
     if (this.getNextPlayableBall()) {
         this.display.setScore(this.score + ' moves left');
     } else {
-        console.log(this.score);
         if (this.score <= 0) {
             this.display.displayText('Pegu!');
             this.display.setScore('you won!');
