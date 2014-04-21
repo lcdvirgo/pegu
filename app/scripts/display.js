@@ -259,13 +259,13 @@ Display.prototype.addNewBall = function(tile) {
         arrow_down.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        if (this.isTouch) {
-            arrow_down.addEventListener("mousedown", function(evt) {
-                self.chose = 'down';
-                var parent_ball = evt.currentTarget.parent.parent;
-                self.mousedown(parent_ball);
-            });
-        }
+        // if (this.isTouch) {
+        //     arrow_down.addEventListener("mousedown", function(evt) {
+        //         self.chose = 'down';
+        //         var parent_ball = evt.currentTarget.parent.parent;
+        //         self.mousedown(parent_ball);
+        //     });
+        // }
         var arrow_up = this.getHoverHelper(tile, 'up');
         helperContainer.addChild(arrow_up);
         arrow_up.addEventListener("rollover", function(evt) {
@@ -278,13 +278,13 @@ Display.prototype.addNewBall = function(tile) {
         arrow_up.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        if (this.isTouch) {
-            arrow_up.addEventListener("mousedown", function(evt) {
-                self.chose = 'up';
-                var parent_ball = evt.currentTarget.parent.parent;
-                self.mousedown(parent_ball);
-            });
-        }
+        // if (this.isTouch) {
+        //     arrow_up.addEventListener("mousedown", function(evt) {
+        //         self.chose = 'up';
+        //         var parent_ball = evt.currentTarget.parent.parent;
+        //         self.mousedown(parent_ball);
+        //     });
+        // }
         var arrow_right = this.getHoverHelper(tile, 'right');
         helperContainer.addChild(arrow_right);
         arrow_right.addEventListener("rollover", function(evt) {
@@ -297,13 +297,13 @@ Display.prototype.addNewBall = function(tile) {
         arrow_right.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        if (this.isTouch) {
-            arrow_right.addEventListener("mousedown", function(evt) {
-                self.chose = 'right';
-                var parent_ball = evt.currentTarget.parent.parent;
-                self.mousedown(parent_ball);
-            });
-        }
+        // if (this.isTouch) {
+        //     arrow_right.addEventListener("mousedown", function(evt) {
+        //         self.chose = 'right';
+        //         var parent_ball = evt.currentTarget.parent.parent;
+        //         self.mousedown(parent_ball);
+        //     });
+        // }
         var arrow_left = this.getHoverHelper(tile, 'left');
         helperContainer.addChild(arrow_left);
         arrow_left.addEventListener("rollover", function(evt) {
@@ -316,13 +316,13 @@ Display.prototype.addNewBall = function(tile) {
         arrow_left.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        if (this.isTouch) {
-            arrow_left.addEventListener("mousedown", function(evt) {
-                self.chose = 'left';
-                var parent_ball = evt.currentTarget.parent.parent;
-                self.mousedown(parent_ball);
-            });
-        }
+        // if (this.isTouch) {
+        //     arrow_left.addEventListener("mousedown", function(evt) {
+        //         self.chose = 'left';
+        //         var parent_ball = evt.currentTarget.parent.parent;
+        //         self.mousedown(parent_ball);
+        //     });
+        // }
         s.cache(s.x - tile.height - 10, s.y - tile.height + 10, tile.width * 2 + 10, tile.height * 2 + 10);
         if (this.gameStatus) {
             ball.cursor = 'pointer';
@@ -366,12 +366,20 @@ Display.prototype.addNewTile = function(tile) {
 Display.prototype.mousedown = function(o) {
     if (this.gameStatus) {
         this.selected = o.n;
+
+
+
+
+
+        if (this.isTouch) {
+            //this.rollover(o);
+        }else{
+
         this.emit("mousedown", {
             n: o.n,
             chose: this.chose
         });
-        if (this.isTouch) {
-            this.rollover(o);
+
         }
     }
 };
