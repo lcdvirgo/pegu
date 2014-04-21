@@ -1,0 +1,20 @@
+{
+  "name": "Pegu",
+  "description": "An ancient puzzle game",
+  "version": "1",
+  "app": {
+    "urls": [
+      "*://pegu.it"
+    ],
+    "launch": {
+      "web_url": "http://www.pegu.it"
+    }
+  },
+  "icons": {
+    "128": "images/icon_128.png"
+  },
+  "permissions": [
+    "unlimitedStorage",
+    "notifications"
+  ]
+}
