@@ -38,6 +38,7 @@ Game.prototype.setMoves = function(o) {
     return availableMoves;
 };
 Game.prototype.mousedown = function(o) {
+
     var self = this;
     var availableMoves = this.setMoves(o);
     var canmove = false;

@@ -15,6 +15,27 @@ Display.prototype.init = function(event) {
     var self = this;
     var canvas_holder = document.getElementById('canvasHolder');
     var canvas = document.createElement('canvas');
+    var hammertime = Hammer(canvas);
+    hammertime.on("dragleft dragright dragup dragdown swipeleft swiperight swipeup swipedown", function(ev) {
+        ev.gesture.preventDefault();
+        if (ev.type == "dragleft" || ev.type == "swipeleft") {
+            self.chose = 'left';
+        }
+        if (ev.type == "dragright" || ev.type == "swiperight") {
+            self.chose = 'right';
+        }
+        if (ev.type == "dragdown" || ev.type == "swipedown") {
+            self.chose = 'down';
+        }
+        if (ev.type == "dragup" || ev.type == "swipeup") {
+            self.chose = 'up';
+        }
+        self.emit("mousedown", {
+            n: self.selected,
+            chose: self.chose
+        });
+        ev.gesture.stopDetect();
+    });
     canvas.id = "pegu";
     canvas.width = window.innerHeight;
     canvas.height = window.innerHeight;
@@ -344,6 +365,7 @@ Display.prototype.addNewTile = function(tile) {
 // INPUTS
 Display.prototype.mousedown = function(o) {
     if (this.gameStatus) {
+        this.selected = o.n;
         this.emit("mousedown", {
             n: o.n,
             chose: this.chose

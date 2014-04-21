@@ -230,7 +230,7 @@ p.play {
 
 
 /* iphone 4 */
-@media only screen and (min-width: 480px) and (max-width: 960px) {
+@media only screen and (max-width: 960px) {
     p{
         width: 100%;
     }
