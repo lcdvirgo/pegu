@@ -153,17 +153,20 @@ Display.prototype.render = function(grid, gameStatus) {
 };
 Display.prototype.moveTile = function(move) {
     this.playTicker();
+    this.ismoving = true;
     var self = this;
     var playing_ball = this.balls[move.from_n];
     this.balls[move.to_n] = playing_ball;
     playing_ball.n = move.to_n;
+    this.rollout(playing_ball);
     createjs.Tween.get(playing_ball).to({
         x: move.final_position.x,
         y: move.final_position.y
-    }, 150, createjs.Ease.linear).call(function() {
+    },150, createjs.Ease.linear).call(function() {
         self.pauseTicker(200);
+        self.ismoving = false;
         self.pegs.removeChild(self.balls[move.eaten]);
-        self.rollout(playing_ball);
+        
     });
 };
 Display.prototype.setAvailableMoves = function(moves) {
@@ -259,13 +262,6 @@ Display.prototype.addNewBall = function(tile) {
         arrow_down.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        // if (this.isTouch) {
-        //     arrow_down.addEventListener("mousedown", function(evt) {
-        //         self.chose = 'down';
-        //         var parent_ball = evt.currentTarget.parent.parent;
-        //         self.mousedown(parent_ball);
-        //     });
-        // }
         var arrow_up = this.getHoverHelper(tile, 'up');
         helperContainer.addChild(arrow_up);
         arrow_up.addEventListener("rollover", function(evt) {
@@ -278,13 +274,6 @@ Display.prototype.addNewBall = function(tile) {
         arrow_up.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        // if (this.isTouch) {
-        //     arrow_up.addEventListener("mousedown", function(evt) {
-        //         self.chose = 'up';
-        //         var parent_ball = evt.currentTarget.parent.parent;
-        //         self.mousedown(parent_ball);
-        //     });
-        // }
         var arrow_right = this.getHoverHelper(tile, 'right');
         helperContainer.addChild(arrow_right);
         arrow_right.addEventListener("rollover", function(evt) {
@@ -297,13 +286,6 @@ Display.prototype.addNewBall = function(tile) {
         arrow_right.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        // if (this.isTouch) {
-        //     arrow_right.addEventListener("mousedown", function(evt) {
-        //         self.chose = 'right';
-        //         var parent_ball = evt.currentTarget.parent.parent;
-        //         self.mousedown(parent_ball);
-        //     });
-        // }
         var arrow_left = this.getHoverHelper(tile, 'left');
         helperContainer.addChild(arrow_left);
         arrow_left.addEventListener("rollover", function(evt) {
@@ -316,13 +298,6 @@ Display.prototype.addNewBall = function(tile) {
         arrow_left.addEventListener("rollout", function(evt) {
             self.helperRollout(evt)
         });
-        // if (this.isTouch) {
-        //     arrow_left.addEventListener("mousedown", function(evt) {
-        //         self.chose = 'left';
-        //         var parent_ball = evt.currentTarget.parent.parent;
-        //         self.mousedown(parent_ball);
-        //     });
-        // }
         s.cache(s.x - tile.height - 10, s.y - tile.height + 10, tile.width * 2 + 10, tile.height * 2 + 10);
         if (this.gameStatus) {
             ball.cursor = 'pointer';
@@ -366,25 +341,16 @@ Display.prototype.addNewTile = function(tile) {
 Display.prototype.mousedown = function(o) {
     if (this.gameStatus) {
         this.selected = o.n;
-
-
-
-
-
-        if (this.isTouch) {
-            //this.rollover(o);
-        }else{
-
-        this.emit("mousedown", {
-            n: o.n,
-            chose: this.chose
-        });
-
+        if (!this.isTouch) {
+            this.emit("mousedown", {
+                n: o.n,
+                chose: this.chose
+            });
         }
     }
 };
 Display.prototype.rollover = function(o) {
-    if (this.gameStatus == 1) {
+    if (this.gameStatus == 1 && !this.ismoving) {
         o.parent.addChild(o);
         this.chose = false;
         this.onechoice = false;
@@ -410,19 +376,14 @@ Display.prototype.rollover = function(o) {
             c.push('arrow_left');
         }
         if (c.length == 1) {
-            var t = o.children[0];
             this.onechoice = true;
             helperContainer.getChildByName(c[0]).alpha = 1;
-        } else if (c.length >= 2) {
-            var t = o.children[0];
-            t.scaleX = t.scaleY = t.scale * 1.2;
         }
         this.updateStage();
     }
 };
 Display.prototype.rollout = function(o) {
-    var t = o.children[0];
-    t.scaleX = t.scaleY = t.scale;
+
     var helperContainer = o.getChildByName('helper');
     for (var i = 0; i < helperContainer.children.length; i++) {
         helperContainer.children[i].alpha = 0;
